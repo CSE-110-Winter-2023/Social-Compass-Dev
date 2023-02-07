@@ -32,5 +32,17 @@
             app:srcCompat="@drawable/compass"
             tools:layout_editor_absoluteY="225dp"
             android:contentDescription="Compass graphic" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:rotation="90"
+            android:text="Home1"
+            android:textSize="20sp"
+            app:layout_constraintCircle="@+id/clock"
+            app:layout_constraintCircleAngle="90"
+            app:layout_constraintCircleRadius="180sp"
+            tools:layout_constraintCircle="@+id/compass"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
