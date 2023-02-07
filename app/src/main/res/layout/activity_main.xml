@@ -42,7 +42,9 @@
             android:textSize="20sp"
             app:layout_constraintCircle="@+id/clock"
             app:layout_constraintCircleAngle="90"
-            app:layout_constraintCircleRadius="180sp"
-            tools:layout_constraintCircle="@+id/compass"/>
+            app:layout_constraintCircleRadius="2000sp"
+            tools:layout_constraintCircle="@+id/compass"
+            tools:layout_editor_absoluteX="313dp"
+            tools:layout_editor_absoluteY="279dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
