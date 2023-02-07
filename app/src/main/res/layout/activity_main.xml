@@ -34,11 +34,39 @@
             android:contentDescription="Compass graphic" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/home1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:rotation="90"
             android:text="Home1"
+            android:textSize="20sp"
+            app:layout_constraintCircle="@+id/clock"
+            app:layout_constraintCircleAngle="90"
+            app:layout_constraintCircleRadius="2000sp"
+            tools:layout_constraintCircle="@+id/compass"
+            tools:layout_editor_absoluteX="313dp"
+            tools:layout_editor_absoluteY="279dp" />
+
+        <TextView
+            android:id="@+id/home2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:rotation="90"
+            android:text="Home2"
+            android:textSize="20sp"
+            app:layout_constraintCircle="@+id/clock"
+            app:layout_constraintCircleAngle="90"
+            app:layout_constraintCircleRadius="2000sp"
+            tools:layout_constraintCircle="@+id/compass"
+            tools:layout_editor_absoluteX="313dp"
+            tools:layout_editor_absoluteY="279dp" />
+
+        <TextView
+            android:id="@+id/home3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:rotation="90"
+            android:text="Home3"
             android:textSize="20sp"
             app:layout_constraintCircle="@+id/clock"
             app:layout_constraintCircleAngle="90"
