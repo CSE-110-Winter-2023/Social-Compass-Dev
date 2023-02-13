@@ -4,15 +4,19 @@ import static com.example.socialcompass.MainActivity.updateUIMain;
 
 import android.widget.TextView;
 
-public class CompassController {
+import org.w3c.dom.Text;
+
+public class CompassUIController implements UIController {
     private float locAngle;
     private float orientAngle;
     private int distance;
+    private TextView tv;
 
-    public CompassController(float locAngle, float orientAngle, int distance){
+    public CompassUIController(float locAngle, float orientAngle, int distance, TextView tv){
         this.locAngle = locAngle;
         this.orientAngle = orientAngle;
         this.distance = distance;
+        this.tv = tv;
     }
 
     public void setLocAngle(float loc){
@@ -31,8 +35,16 @@ public class CompassController {
         return this.orientAngle;
     }
 
-    public void updateUI(TextView tv){
-        float angle1 = locAngle + orientAngle;
-        updateUIMain(angle1, tv, distance);
+    public void setTextView(TextView tv) {
+        this.tv = tv;
+    }
+    public TextView getTextView() {
+        return tv;
+    }
+
+    @Override
+    public void updateUI(){
+        float angle = locAngle + orientAngle;
+        updateUIMain(angle, tv, distance);
     }
 }
