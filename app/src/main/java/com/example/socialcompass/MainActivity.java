@@ -51,28 +51,38 @@ public class MainActivity extends AppCompatActivity {
         locationService = LocationService.singleton(this);
         orientationService = new OrientationService(this);
 
-        CompassController cp1 = new CompassController(0,0, tv_location_1, circleRadiusLayerOne);
-        CompassController cp2 = new CompassController(0,0, tv_location_2, circleRadiusLayerOne);
-        CompassController cp3 = new CompassController(0,0, tv_location_3, circleRadiusLayerOne);
+        CompassController cp1 = new CompassController(0,0, circleRadiusLayerOne);
+        CompassController cp2 = new CompassController(0,0, circleRadiusLayerOne);
+        CompassController cp3 = new CompassController(0,0, circleRadiusLayerOne);
 
         locationService.getLocation().observe(this, loc->{
             Location currentLocation = new Location("userLocation");
             currentLocation.setLatitude(loc.first);
             currentLocation.setLongitude(loc.second);
             float angle1 = currentLocation.bearingTo(targetLocation1);
-            float angle3 = currentLocation.bearingTo(targetLocation2);
-            float angle2 = currentLocation.bearingTo(targetLocation3);
+            float angle2 = currentLocation.bearingTo(targetLocation2);
+            float angle3 = currentLocation.bearingTo(targetLocation3);
             cp1.setLocAngle(angle1);
-            cp3.setLocAngle(angle2);
-            cp2.setLocAngle(angle3);
+            cp1.updateUI(tv_location_1);
+
+            cp2.setLocAngle(angle2);
+            cp2.updateUI(tv_location_2);
+
+            cp3.setLocAngle(angle3);
+            cp3.updateUI(tv_location_3);
         });
 
         orientationService.getOrientation().observe(this, orientation -> {
             float piFloat = (float) Math.PI;
             float angle = -1*orientation*180/piFloat;
             cp1.setOrient(angle);
+            cp1.updateUI(tv_location_1);
+
             cp2.setOrient(angle);
+            cp2.updateUI(tv_location_2);
+
             cp3.setOrient(angle);
+            cp3.updateUI(tv_location_3);
         });
     }
 
