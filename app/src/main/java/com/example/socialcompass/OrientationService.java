@@ -75,7 +75,7 @@ public class OrientationService implements SensorEventListener {
         }
     }
 
-    private void unregisterSensorListeners(){
+    public void unregisterSensorListeners(){
         sensorManager.unregisterListener(this);
     }
 

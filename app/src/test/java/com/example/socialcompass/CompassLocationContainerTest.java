@@ -74,6 +74,8 @@ public class CompassLocationContainerTest {
         assertEquals(0, emptyContainer.getAllLocations().size());
         assertEquals(2, containerWithTwoElements.getAllLocations().size());
     }
+
+
 }
 
 

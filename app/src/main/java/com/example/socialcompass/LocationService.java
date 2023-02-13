@@ -50,7 +50,7 @@ public class LocationService implements LocationListener {
         this.locationValue.postValue(new Pair<Double, Double>(location.getLatitude(), location.getLongitude()));
     }
 
-    private void unregisterLocationListener() {
+    public void unregisterLocationListener() {
         locationManager.removeUpdates(this);
     }
 

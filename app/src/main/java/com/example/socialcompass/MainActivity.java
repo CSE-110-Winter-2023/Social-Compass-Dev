@@ -27,6 +27,13 @@ public class MainActivity extends AppCompatActivity {
     private int circleRadiusLayerOne;
 
     @Override
+    protected void onPause(){
+        super.onPause();
+        orientationService.unregisterSensorListeners();
+        locationService.unregisterLocationListener();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -57,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         orientationService = OrientationService.singleton(this);
 
         locationService.getLocation().observe(this, loc -> {
-            System.out.println(loc.first);
+            System.out.println("WORK " +loc.first);
             currentLocation.setLatitude(loc.first);
             currentLocation.setLongitude(loc.second);
 
@@ -71,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         orientationService.getOrientation().observe(this, orientation -> {
             float piFloat = (float) Math.PI;
             float angle = -1*orientation*180/piFloat;
+//            System.out.println("WORKKKKKKKKK" + angle);
 
             for (CompassLocationObject o_loc : locations) {
                 o_loc.getController().setOrient(angle);
@@ -93,6 +101,10 @@ public class MainActivity extends AppCompatActivity {
 
     public LocationService getLocationService() {
         return locationService;
+    }
+
+    public OrientationService getOrientationService() {
+        return orientationService;
     }
 
     @Override
