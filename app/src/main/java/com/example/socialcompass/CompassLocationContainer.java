@@ -46,6 +46,12 @@ public class CompassLocationContainer implements Iterable<CompassLocationObject>
         locationList.add(compassLocation);
     }
 
+    public void syncAllNames() {
+        for (CompassLocationObject loc : locationList) {
+            loc.syncName();
+        }
+    }
+
     @Override
     public Iterator<CompassLocationObject> iterator() {
         return locationList.iterator();

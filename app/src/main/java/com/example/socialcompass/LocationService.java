@@ -42,9 +42,7 @@ public class LocationService implements LocationListener {
             throw new IllegalStateException("App needs location permissions to get latest location");
         }
 
-//        this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-        this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                0, 0, this);
+        this.locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
     }
 
     @Override
@@ -52,13 +50,15 @@ public class LocationService implements LocationListener {
         this.locationValue.postValue(new Pair<Double, Double>(location.getLatitude(), location.getLongitude()));
     }
 
-    private void unregisterLocationListener(){
+    private void unregisterLocationListener() {
         locationManager.removeUpdates(this);
     }
 
-    public LiveData<Pair<Double, Double>> getLocation(){return this.locationValue;}
+    public LiveData<Pair<Double, Double>> getLocation() {
+        return this.locationValue;
+    }
 
-    public void setMockOrientationSource (MutableLiveData<Pair<Double, Double>> mockDataSource){
+    public void setMockLocationSource(MutableLiveData<Pair<Double, Double>> mockDataSource){
         unregisterLocationListener();
         this.locationValue = mockDataSource;
     }

@@ -1,7 +1,6 @@
 package com.example.socialcompass;
 
 import android.location.Location;
-import android.widget.TextView;
 
 public class CompassLocationObject {
     private String locationName;
@@ -12,6 +11,10 @@ public class CompassLocationObject {
         this.locationName = locationName;
         this.location = location;
         this.controller = controller;
+
+        if (this.controller != null && this.controller.getTextView() != null){
+            controller.getTextView().setText(this.locationName);
+        }
     }
 
     public String getLocationName() {
@@ -37,4 +40,9 @@ public class CompassLocationObject {
     public void setController(CompassUIController controller) {
         this.controller = controller;
     }
+
+    public void syncName() {
+        this.locationName = controller.getTextView().getText().toString();
+    }
+
 }

@@ -1,10 +1,7 @@
 package com.example.socialcompass;
 
-import static com.example.socialcompass.MainActivity.updateUIMain;
-
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 public class CompassUIController implements UIController {
     private float locAngle;
@@ -38,6 +35,7 @@ public class CompassUIController implements UIController {
     public void setTextView(TextView tv) {
         this.tv = tv;
     }
+
     public TextView getTextView() {
         return tv;
     }
@@ -45,6 +43,10 @@ public class CompassUIController implements UIController {
     @Override
     public void updateUI(){
         float angle = locAngle + orientAngle;
-        updateUIMain(angle, tv, distance);
+        ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) tv.getLayoutParams();
+        layoutParams1.circleAngle = angle;
+        layoutParams1.circleRadius = distance;
+        tv.setLayoutParams(layoutParams1);
+        tv.setRotation(angle);
     }
 }

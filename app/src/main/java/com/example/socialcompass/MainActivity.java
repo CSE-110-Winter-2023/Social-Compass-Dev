@@ -4,21 +4,26 @@ package com.example.socialcompass;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.MutableLiveData;
 
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Rect;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
     private OrientationService orientationService;
     private LocationService locationService;
-
     Location currentLocation;
-
     private CompassLocationContainer locations;
-
     private int circleRadiusLayerOne;
 
     @Override
@@ -37,21 +42,22 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 200);
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, 200);
         }
+
         circleRadiusLayerOne = (int) (180 * getResources().getDisplayMetrics().scaledDensity);
 
-        CompassUIController cp1 = new CompassUIController(0,0, circleRadiusLayerOne, (TextView) findViewById(R.id.home1));
-        CompassUIController cp2 = new CompassUIController(0,0, circleRadiusLayerOne, (TextView) findViewById(R.id.home2));
-        CompassUIController cp3 = new CompassUIController(0,0, circleRadiusLayerOne, (TextView) findViewById(R.id.home3));
+        String[] names = new String[]{"Home", "Parents", "Friend"};
+        float[] lat = new float[]{45.0819f, 20.0819f, 30.0819f};
+        float[] lon = new float[]{73.3329f, -72.3329f, -50.3329f};
 
-        locations.createAndAddLocation("Home", 45.0819, 73.3329, cp1);
-        locations.createAndAddLocation("Parents", 20.0819, -72.3329, cp2);
-        locations.createAndAddLocation("Friend", 30.0819, -50.3329, cp3);
+        for (int i = 0; i < names.length; i++) {
+            AddLocationToActivity(names[i], lat[i], lon[i]);
+        }
 
         locationService = LocationService.singleton(this);
-        orientationService = new OrientationService(this);
+        orientationService = OrientationService.singleton(this);
 
-
-        locationService.getLocation().observe(this, loc-> {
+        locationService.getLocation().observe(this, loc -> {
+            System.out.println(loc.first);
             currentLocation.setLatitude(loc.first);
             currentLocation.setLongitude(loc.second);
 
@@ -59,8 +65,6 @@ public class MainActivity extends AppCompatActivity {
                 float angle = currentLocation.bearingTo(o_loc.getLocation());
                 o_loc.getController().setLocAngle(angle);
                 o_loc.getController().updateUI();
-
-                Log.d("L_OBSERVER", Float.toString(((TextView) findViewById(R.id.home1)).getX()));
             }
         });
 
@@ -75,15 +79,38 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public static void updateUIMain(float angle, TextView tv, int distance){
-        ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) tv.getLayoutParams();
-        layoutParams1.circleAngle = angle;
-        layoutParams1.circleRadius = distance;
-        tv.setLayoutParams(layoutParams1);
-        tv.setRotation(angle);
+    private void AddLocationToActivity(String name, float lat, float lon) {
+        CompassUIController ui_controller = new CompassUIController(0,0, circleRadiusLayerOne, null);
+        TextView cur_text_view = Utilities.createCompassLocationTextView(this, name, 0, 0, 20f, true);
+        ((ConstraintLayout) findViewById(R.id.clock)).addView(cur_text_view);
+        ui_controller.setTextView(cur_text_view);
+        locations.createAndAddLocation(name, lat, lon, ui_controller);
     }
 
     public CompassLocationContainer getLocationContainer() {
         return locations;
+    }
+
+    public LocationService getLocationService() {
+        return locationService;
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if (v instanceof EditText) {
+                Rect outRect = new Rect();
+                v.getGlobalVisibleRect(outRect);
+                if (!outRect.contains((int) event.getRawX(), (int) event.getRawY())) {
+                    v.clearFocus();
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+                    locations.syncAllNames();
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event);
     }
 }

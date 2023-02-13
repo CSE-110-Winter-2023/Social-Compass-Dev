@@ -20,8 +20,13 @@ public class CompassUIControllerTest {
     private CompassUIController compassUIController;
 
     @Rule
-    public GrantPermissionRule mRuntimePermissionRule = GrantPermissionRule
+    public GrantPermissionRule mRuntimePermissionRuleF = GrantPermissionRule
             .grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
+
+    @Rule
+    public GrantPermissionRule mRuntimePermissionRuleC = GrantPermissionRule
+            .grant(android.Manifest.permission.ACCESS_COARSE_LOCATION);
+
 
     @Before
     public void setup() {
@@ -52,4 +57,27 @@ public class CompassUIControllerTest {
         assertEquals(90, compassUIController.getOrient(), 0.001);
     }
 
+    @Test
+    public void testUpdateUI_LocAngleChange() {
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
+        scenario.moveToState(Lifecycle.State.CREATED);
+        scenario.moveToState(Lifecycle.State.STARTED);
+
+        scenario.onActivity(activity -> {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            CompassUIController controller = activity.getLocationContainer().getLocationAt(0).getController();
+            TextView cur_tv = controller.getTextView();
+
+            float old_rot = controller.getTextView().getRotation();
+
+            controller.setLocAngle(controller.getLocAngle() + 90);
+            controller.updateUI();
+
+            assertEquals(old_rot + 90, cur_tv.getRotation(), 0.1);
+        });
+    }
 }
