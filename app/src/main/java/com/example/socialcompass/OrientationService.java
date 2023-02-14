@@ -7,6 +7,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -18,9 +19,11 @@ public class OrientationService implements SensorEventListener {
     private float[] accelerometerReading;
     private float[] magnetometerReading;
     private MutableLiveData<Float> azimuth;
+    private Activity activity;
 
     protected OrientationService(Activity activity){
         this.azimuth = new MutableLiveData<>();
+        this.activity = activity;
         this.sensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
         this.registerSensorListner();
     }
@@ -83,7 +86,11 @@ public class OrientationService implements SensorEventListener {
 
     public void setMockOrientationSource (MutableLiveData<Float> mockDataSource){
         unregisterSensorListeners();
-        this.azimuth = mockDataSource;
+
+        /* Unregister the location manager, and send any activities on this observe
+         *  to the original MutableLiveData object.
+         */
+        mockDataSource.observe((LifecycleOwner) activity, loc -> this.azimuth.setValue(loc));
     }
 
 }

@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
         orientationService = OrientationService.singleton(this);
 
         locationService.getLocation().observe(this, loc -> {
-            System.out.println("WORK " +loc.first);
             currentLocation.setLatitude(loc.first);
             currentLocation.setLongitude(loc.second);
 
@@ -78,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
         orientationService.getOrientation().observe(this, orientation -> {
             float piFloat = (float) Math.PI;
             float angle = -1*orientation*180/piFloat;
-//            System.out.println("WORKKKKKKKKK" + angle);
 
             for (CompassLocationObject o_loc : locations) {
                 o_loc.getController().setOrient(angle);

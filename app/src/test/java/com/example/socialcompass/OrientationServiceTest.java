@@ -6,6 +6,7 @@ import android.Manifest;
 import android.util.Pair;
 import android.widget.TextView;
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.MutableLiveData;
 import androidx.test.core.app.ActivityScenario;
@@ -26,6 +27,9 @@ public class OrientationServiceTest {
     public GrantPermissionRule cRuntimePermissionRule = GrantPermissionRule
             .grant(Manifest.permission.ACCESS_COARSE_LOCATION);
 
+    @Rule
+    public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
+
     @Test
     public void testOrientationUpdate() {
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
@@ -40,44 +44,17 @@ public class OrientationServiceTest {
             Float start = 13F;
             Float end = 35F;
             mockDataSource.setValue(start);
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
 
-            System.out.println("mockValue start " + mockDataSource.getValue());
-            System.out.println("tv start " + activity.getLocationContainer().getLocationAt(0).getController().getTextView().getRotation());
-            System.out.println("orient start " + activity.getLocationContainer().getLocationAt(0).getController().getOrient());
-
-//            CompassLocationContainer container = activity.getLocationContainer();
-
+            float before_rotation = activity.getLocationContainer().getLocationAt(0).getController().getTextView().getRotation();
+            float before_orientation = activity.getLocationContainer().getLocationAt(0).getController().getOrient();
 
             mockDataSource.setValue(end);
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            System.out.println("mockValue end " + mockDataSource.getValue());
-            System.out.println("tv end " + activity.getLocationContainer().getLocationAt(0).getController().getTextView().getRotation());
-            System.out.println("orient end " + activity.getLocationContainer().getLocationAt(0).getController().getOrient());
 
+            float after_rotation = activity.getLocationContainer().getLocationAt(0).getController().getTextView().getRotation();
+            float after_orientation = activity.getLocationContainer().getLocationAt(0).getController().getOrient();
+
+            assertNotEquals(before_rotation, after_rotation);
+            assertNotEquals(before_orientation, after_orientation);
         });
     }
 }
-
-//     System.out.println(activity.getLocationContainer().getLocationAt(0).getLocationName());
-//             System.out.println(activity.getLocationContainer().getLocationAt(0).getLocation().getLongitude());
-//             System.out.println(activity.getLocationContainer().getLocationAt(0).getLocation().getLatitude());
-//             System.out.println("UI" + activity.getLocationContainer().getLocationAt(0).getController().getTextView().getRotation());
-//
-//             activity.getLocationContainer().getLocationAt(0).getLocation().setLongitude(0);
-//             activity.getLocationContainer().getLocationAt(0).getLocation().setLatitude(0);
-//
-//
-//
-//             System.out.println(activity.getLocationContainer().getLocationAt(0).getController().getLocAngle());
-//             System.out.println(activity.getLocationContainer().getLocationAt(0).getController().getOrient());
-//             System.out.println("UI" + activity.getLocationContainer().getLocationAt(0).getController().getTextView().getRotation());
-

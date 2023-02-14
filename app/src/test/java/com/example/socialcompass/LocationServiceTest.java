@@ -1,11 +1,17 @@
 package com.example.socialcompass;
 
+import static android.os.Looper.getMainLooper;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 import android.Manifest;
+import android.content.Context;
+import android.os.Looper;
+import android.util.Log;
 import android.util.Pair;
 import android.widget.TextView;
 
+import androidx.arch.core.executor.testing.CountingTaskExecutorRule;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.MutableLiveData;
 import androidx.test.core.app.ActivityScenario;
@@ -15,6 +21,13 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.Shadows;
+
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
+
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 
 @RunWith(RobolectricTestRunner.class)
 public class LocationServiceTest {
@@ -25,6 +38,9 @@ public class LocationServiceTest {
     @Rule
     public GrantPermissionRule cRuntimePermissionRule = GrantPermissionRule
             .grant(Manifest.permission.ACCESS_COARSE_LOCATION);
+
+    @Rule
+    public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     @Test
     public void testLocationsUpdate() {
@@ -42,27 +58,13 @@ public class LocationServiceTest {
 
             mockDataSource.setValue(start);
 
-            // Add a delay to allow the location to update
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
             float rotation_before = activity.getLocationContainer().getLocationAt(0).getController().getTextView().getRotation();
 
             mockDataSource.setValue(end);
 
-            // Add a delay to allow the location to update
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
             float rotation_after = activity.getLocationContainer().getLocationAt(0).getController().getTextView().getRotation();
-            System.out.println("Rotation Before: " + rotation_before);
-            System.out.println("Rotation After: " + rotation_after);
+
+            assertNotEquals(rotation_before, rotation_after);
         });
     }
 }

@@ -10,6 +10,7 @@ import android.util.Pair;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -47,7 +48,7 @@ public class LocationService implements LocationListener {
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
-        this.locationValue.postValue(new Pair<Double, Double>(location.getLatitude(), location.getLongitude()));
+        this.locationValue.postValue(new Pair<>(location.getLatitude(), location.getLongitude()));
     }
 
     public void unregisterLocationListener() {
@@ -60,6 +61,10 @@ public class LocationService implements LocationListener {
 
     public void setMockLocationSource(MutableLiveData<Pair<Double, Double>> mockDataSource){
         unregisterLocationListener();
-        this.locationValue = mockDataSource;
+
+        /* Unregister the location manager, and send any activities on this observe
+        *  to the original MutableLiveData object.
+        */
+        mockDataSource.observe((LifecycleOwner) activity, loc -> this.locationValue.setValue(loc));
     }
 }
