@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
 
         //if one is filled in home they must all be filled
         if(homeLabelBoolFilled || homeLatBoolFilled || homeLongBoolFilled){
-            if(!(homeLabelBoolFilled && homeLatBoolFilled && homeLongBoolFilled)){
+            if(!(homeLatBoolFilled && homeLongBoolFilled)){
                 Utilities.showAlert(this, "Please do not leave unfilled fields for a location");
                 return;
             }
@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
 
         //if one is filled in home they must all be filled
         if(famLabelBoolFilled || famLatBoolFilled || famLongBoolFilled){
-            if(!(famLabelBoolFilled && famLatBoolFilled && famLongBoolFilled)){
+            if(!(famLatBoolFilled && famLongBoolFilled)){
                 Utilities.showAlert(this, "Please do not leave unfilled fields for a location");
                 return;
             }
@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
 
         //if one is filled in home they must all be filled
         if(friendLabelBoolFilled || friendLatBoolFilled || friendLongBoolFilled){
-            if(!(friendLabelBoolFilled && friendLatBoolFilled && friendLongBoolFilled)){
+            if(!(friendLatBoolFilled && friendLongBoolFilled)){
                 Utilities.showAlert(this, "Please do not leave unfilled fields for a location");
                 return;
             }
