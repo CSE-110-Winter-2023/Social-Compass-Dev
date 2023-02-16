@@ -67,4 +67,25 @@ public class LocationServiceTest {
             assertNotEquals(rotation_before, rotation_after);
         });
     }
+
+    @Test
+    public void testGetLocation() {
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
+        scenario.moveToState(Lifecycle.State.CREATED);
+        scenario.moveToState(Lifecycle.State.STARTED);
+
+        scenario.onActivity(activity -> {
+            MutableLiveData<Pair<Double, Double>> mockDataSource = new MutableLiveData<>();
+            activity.getLocationService().setMockLocationSource(mockDataSource);
+
+            Pair<Double, Double> start = new Pair<>(-73.0000, 2.0000);
+            Pair<Double, Double> end = new Pair<>(81.0000, 2.0000);
+
+            mockDataSource.setValue(start);
+            assertEquals(start, activity.getLocationService().getLocation().getValue());
+
+            mockDataSource.setValue(end);
+            assertEquals(end, activity.getLocationService().getLocation().getValue());
+        });
+    }
 }

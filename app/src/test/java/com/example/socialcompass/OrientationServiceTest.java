@@ -1,5 +1,6 @@
 package com.example.socialcompass;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 import android.Manifest;
@@ -55,6 +56,27 @@ public class OrientationServiceTest {
 
             assertNotEquals(before_rotation, after_rotation);
             assertNotEquals(before_orientation, after_orientation);
+
+        });
+    }
+
+    @Test
+    public void testGetOrientation() {
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class);
+        scenario.moveToState(Lifecycle.State.CREATED);
+        scenario.moveToState(Lifecycle.State.STARTED);
+        scenario.onActivity(activity -> {
+            MutableLiveData<Float> mockDataSource = new MutableLiveData<>();
+            //getting the singleton
+            OrientationService orientationService = activity.getOrientationService();
+            orientationService.setMockOrientationSource(mockDataSource);
+
+            Float start = 13F;
+            Float end = 35F;
+            mockDataSource.setValue(start);
+            assertEquals(start, activity.getOrientationService().getOrientation().getValue());
+            mockDataSource.setValue(end);
+            assertEquals(end, activity.getOrientationService().getOrientation().getValue());
         });
     }
 }
