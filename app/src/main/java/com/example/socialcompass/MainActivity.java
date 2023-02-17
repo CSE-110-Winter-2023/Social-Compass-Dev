@@ -10,9 +10,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    final String parentLabelKey = "parentLabelKey";
-    final String parentLatKey = "parentLatKey";
-    final String parentLongKey = "parentLongKey";
+    final String parentLabelKey = String.valueOf(R.string.parentLabelKey);
+    final String parentLatKey = String.valueOf(R.string.parentLatKey);
+    final String parentLongKey = String.valueOf(R.string.parentLongKey);
     final String hasLocation = "hasLocation";
     boolean hasHome = false;
 
@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         checkUser();
+
         Intent intent = new Intent(this, CompassViewActivity.class);
         if (hasHome == true)
         {
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         else
         {
             setContentView(R.layout.activity_main);
-            loadProfile();
+//            loadProfile();
         }
     }
 
@@ -37,37 +38,33 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         hasHome = preferences.getBoolean(hasLocation, false);
     }
-    public void loadProfile(){
-        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-
-        // Coordinates for Parent's Home
-        String parentName = preferences.getString(parentLabelKey, "");
-        String parentX = preferences.getString(parentLatKey, "");
-        String parentY = preferences.getString(parentLongKey, "");
-
-        EditText parentLabel = findViewById(R.id.parentLabel);
-        parentLabel.setText(parentName);
-
-        EditText parentLat = findViewById(R.id.parentLat);
-        parentLat.setText(parentX);
-
-        EditText homeLong = findViewById((R.id.parentLong));
-        homeLong.setText(parentY);
-    }
+//    public void loadProfile(){
+//        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+//
+//        // Coordinates for Parent's Home
+//        String parentName = preferences.getString(parentLabelKey, "");
+//        String parentX = preferences.getString(parentLatKey, "");
+//        String parentY = preferences.getString(parentLongKey, "");
+//
+//        EditText parentLabel = findViewById(R.id.parentLabel);
+//        parentLabel.setText(parentName);
+//
+//        EditText parentLat = findViewById(R.id.parentLat);
+//        parentLat.setText(parentX);
+//
+//        EditText homeLong = findViewById((R.id.parentLong));
+//        homeLong.setText(parentY);
+//    }
 
     public void saveLocation(String locationLabel, String locationLabelKey, float locationLat, String locationLatKey, float locationLong, String locationLongKey){
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
 
-        String locationLatString = "" + locationLat;
-        String locationLongString = "" + locationLong;
-
-
         editor.putString(locationLabelKey, locationLabel);
 
 
-        editor.putString(locationLatKey, locationLatString);
-        editor.putString(locationLongKey, locationLongString);
+        editor.putFloat(locationLatKey, locationLat);
+        editor.putFloat(locationLongKey, locationLong);
 
         editor.putBoolean(hasLocation, true);
 
@@ -105,9 +102,9 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        if(!(parentLabelBoolFilled&&parentLatBoolFilled&&parentLongBoolFilled)){
-            saveLocation("", parentLabelKey, Float.parseFloat(parentLat.getText().toString()), parentLatKey, Float.parseFloat(parentLong.getText().toString()), parentLongKey);
-        }
+//        if(!(parentLabelBoolFilled&&parentLatBoolFilled&&parentLongBoolFilled)){
+//            saveLocation("", parentLabelKey, Float.parseFloat(parentLat.getText().toString()), parentLatKey, Float.parseFloat(parentLong.getText().toString()), parentLongKey);
+//        }
 
 
         //last check if everything is empty
@@ -127,7 +124,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         //later instead of calling finish we will call saveProfile and intent to compassActivity
-        finish();
+//        finish();
+        Intent intent = new Intent(this, CompassViewActivity.class);
+        startActivity(intent);
 
     }
 }
