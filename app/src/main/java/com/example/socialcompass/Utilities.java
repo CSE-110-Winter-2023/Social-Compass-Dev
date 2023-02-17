@@ -28,13 +28,13 @@ public class Utilities extends Activity {
     }
 
     public static boolean checkLatitude(float lat){
-        if(lat <= -90 || lat >= 90){
+        if(lat < -90 || lat >= 90) {
             return false;
         }
         return true;
     }
     public static boolean checkLongitude(float Long){
-        if(Long <= -180 || Long > 180){
+        if(Long < -180 || Long >= 180){
             return false;
         }
         return true;
