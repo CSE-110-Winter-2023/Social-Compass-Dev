@@ -1,5 +1,6 @@
 package com.example.socialcompass;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -12,16 +13,30 @@ public class MainActivity extends AppCompatActivity {
     final String parentLabelKey = "parentLabelKey";
     final String parentLatKey = "parentLatKey";
     final String parentLongKey = "parentLongKey";
-
-
+    final String hasLocation = "hasLocation";
+    boolean hasHome = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        loadProfile();
+
+        checkUser();
+        Intent intent = new Intent(this, CompassViewActivity.class);
+        if (hasHome == true)
+        {
+            startActivity(intent);
+        }
+        else
+        {
+            setContentView(R.layout.activity_main);
+            loadProfile();
+        }
     }
 
+    public void checkUser() {
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        hasHome = preferences.getBoolean(hasLocation, false);
+    }
     public void loadProfile(){
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 
@@ -38,22 +53,6 @@ public class MainActivity extends AppCompatActivity {
 
         EditText homeLong = findViewById((R.id.parentLong));
         homeLong.setText(parentY);
-
-
-    }
-
-    //move them out to utilities probs
-    private static boolean checkLatitude(float lat){
-        if(lat <= -90 || lat >= 90){
-            return false;
-        }
-        return true;
-    }
-    private static boolean checkLongitude(float Long){
-        if(Long <= -180 || Long > 180){
-            return false;
-        }
-        return true;
     }
 
     public void saveLocation(String locationLabel, String locationLabelKey, float locationLat, String locationLatKey, float locationLong, String locationLongKey){
@@ -69,6 +68,9 @@ public class MainActivity extends AppCompatActivity {
 
         editor.putString(locationLatKey, locationLatString);
         editor.putString(locationLongKey, locationLongString);
+
+        editor.putBoolean(hasLocation, true);
+
         editor.apply();
     }
 
@@ -109,6 +111,19 @@ public class MainActivity extends AppCompatActivity {
 
 
         //last check if everything is empty
+
+        // Check to see if valid input
+
+        if (!Utilities.checkLatitude(Float.parseFloat(parentLat.getText().toString())))
+        {
+            Utilities.showAlert(this, "Please enter a valid latitude.");
+            return;
+        }
+        if (!Utilities.checkLongitude(Float.parseFloat(parentLong.getText().toString())))
+        {
+            Utilities.showAlert(this, "Please enter a valid longitude.");
+            return;
+        }
 
 
         //later instead of calling finish we will call saveProfile and intent to compassActivity
@@ -339,3 +354,4 @@ public class MainActivity extends AppCompatActivity {
 //
 //    }
 //}
+
