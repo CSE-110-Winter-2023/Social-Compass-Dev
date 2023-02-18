@@ -2,6 +2,7 @@ package com.example.socialcompass;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
@@ -23,16 +24,18 @@ public class CompassViewActivity extends AppCompatActivity {
     Location currentLocation;
     private CompassLocationContainer locations;
     private int circleRadiusLayerOne;
+
+
     final String parentLabelKey = String.valueOf(R.string.parentLabelKey);
     final String parentLatKey = String.valueOf(R.string.parentLatKey);
     final String parentLongKey = String.valueOf(R.string.parentLongKey);
 
-    @Override
-    protected void onPause(){
-        super.onPause();
-        orientationService.unregisterSensorListeners();
-        locationService.unregisterLocationListener();
-    }
+//    @Override
+//    protected void onPause(){
+//        super.onPause();
+//        orientationService.unregisterSensorListeners();
+//        locationService.unregisterLocationListener();
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +56,22 @@ public class CompassViewActivity extends AppCompatActivity {
 
         circleRadiusLayerOne = (int) (180 * getResources().getDisplayMetrics().scaledDensity);
 
-        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-        String parentLabelValue = preferences.getString(parentLabelKey, "");
-        Float parentLatValue = preferences.getFloat(parentLatKey, 0);
-        Float parentLongValue = preferences.getFloat(parentLongKey, 0);
+        float defaultVal = -8888;
+        Intent intent = getIntent();
+        String parentLabelValue = intent.getStringExtra(parentLabelKey);
+        float parentLatValue = intent.getFloatExtra(parentLatKey, defaultVal);
+        float parentLongValue = intent.getFloatExtra(parentLongKey, defaultVal);
+        if(parentLatValue == defaultVal){
+            Utilities.showAlert(this, "Error Occurred: Lat Value is " + parentLatValue);
+            return;
+        }
+        if(parentLongValue == defaultVal){
+            Utilities.showAlert(this, "Error Occurred: Long Value is " + parentLongValue);
+            return;
+        }
+
+
+        System.out.println("tracking " + parentLabelValue + " at lat " + parentLatValue + " long " + parentLongValue);
 
         String[] names = new String[]{parentLabelValue};
         float[] lat = new float[]{parentLatValue};
@@ -89,6 +104,11 @@ public class CompassViewActivity extends AppCompatActivity {
                 o_loc.getController().updateUI();
             }
         });
+    }
+
+    public void onBackClicked(View view){
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     private void AddLocationToActivity(String name, float lat, float lon) {
