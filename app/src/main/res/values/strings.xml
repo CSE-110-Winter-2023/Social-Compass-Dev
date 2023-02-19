@@ -4,4 +4,6 @@
     <string name="parentLabelKey">parentLabelKey</string>
     <string name="parentLatKey">parentLatKey</string>
     <string name="parentLongKey">parentLongKey</string>
+    <string name="orientOverride">orientOverride</string>
+    <string name="orientOverrideBool">orientOverrideBool</string>
 </resources>

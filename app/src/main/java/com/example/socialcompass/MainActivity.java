@@ -15,7 +15,8 @@ public class MainActivity extends AppCompatActivity {
     final String parentLabelKey = String.valueOf(R.string.parentLabelKey);
     final String parentLatKey = String.valueOf(R.string.parentLatKey);
     final String parentLongKey = String.valueOf(R.string.parentLongKey);
-
+    final String orientOverrideKey = String.valueOf(R.string.orientOverride);
+    final String orientOverrideBoolKey = String.valueOf(R.string.orientOverrideBool);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +69,69 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
+    public void onOKclicked(View view){
+        EditText orientText = findViewById(R.id.orientInput);
+        boolean orientBoolFilled = !orientText.getText().toString().isEmpty();
+        if(!orientBoolFilled){
+            Utilities.showAlert(this, "Please input new orientation");
+            return;
+        }
+        float orientValue = Float.parseFloat(orientText.getText().toString());
+        if(orientValue < 0 || orientValue > 359){
+            Utilities.showAlert(this, "Please valid new orientation");
+            return;
+        }
+        float orientInput = Float.parseFloat(orientText.getText().toString());
+
+        //create editTexts for each inputs
+        EditText parentLabel = findViewById(R.id.parentLabel);
+        EditText parentLat = findViewById(R.id.parentLat);
+        EditText parentLong= findViewById(R.id.parentLong);
+
+        //check if there is a location that is not completely  filled
+        boolean parentLabelBoolFilled = !parentLabel.getText().toString().isEmpty();
+        boolean parentLatBoolFilled = !parentLat.getText().toString().isEmpty();
+        boolean parentLongBoolFilled = !parentLong.getText().toString().isEmpty();
+
+        //if one is filled in home they must all be filled
+        if(parentLabelBoolFilled || parentLatBoolFilled || parentLongBoolFilled){
+            if(!(parentLatBoolFilled && parentLongBoolFilled)){
+                Utilities.showAlert(this, "Please do not leave unfilled fields for a location");
+                return;
+            }
+        }
+
+        if(!(parentLabelBoolFilled || parentLatBoolFilled || parentLongBoolFilled)){
+            Utilities.showAlert(this, "Please do not leave unfilled fields for a location");
+            return;
+        }
+
+        // Check to see if valid input
+        if (!Utilities.checkLatitude(Float.parseFloat(parentLat.getText().toString())))
+        {
+            Utilities.showAlert(this, "Please enter a valid latitude.");
+            return;
+        }
+        if (!Utilities.checkLongitude(Float.parseFloat(parentLong.getText().toString())))
+        {
+            Utilities.showAlert(this, "Please enter a valid longitude.");
+            return;
+        }
+
+        String homeLabelValue = parentLabel.getText().toString();
+        float homeLatValue = Float.parseFloat(parentLat.getText().toString());
+        float homeLongValue = Float.parseFloat(parentLong.getText().toString());
+        saveLocation(homeLabelValue, parentLabelKey, homeLatValue, parentLatKey, homeLongValue, parentLongKey);
+
+
+        Intent intent = new Intent(this, CompassViewActivity.class);
+        intent.putExtra(parentLabelKey, homeLabelValue);
+        intent.putExtra(parentLatKey, homeLatValue);
+        intent.putExtra(parentLongKey, homeLongValue);
+        intent.putExtra(orientOverrideKey, orientInput);
+        intent.putExtra(orientOverrideBoolKey, true);
+        startActivity(intent);
+    }
     public void onSubmitClicked(View view){
         //create editTexts for each inputs
         EditText parentLabel = findViewById(R.id.parentLabel);
@@ -114,6 +178,8 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(parentLabelKey, homeLabelValue);
         intent.putExtra(parentLatKey, homeLatValue);
         intent.putExtra(parentLongKey, homeLongValue);
+        intent.putExtra(orientOverrideBoolKey, false);
         startActivity(intent);
     }
+
 }

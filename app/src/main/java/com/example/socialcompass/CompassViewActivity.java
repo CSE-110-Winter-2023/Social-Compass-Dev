@@ -17,6 +17,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.MutableLiveData;
 
 public class CompassViewActivity extends AppCompatActivity {
     private OrientationService orientationService;
@@ -29,6 +30,8 @@ public class CompassViewActivity extends AppCompatActivity {
     final String parentLabelKey = String.valueOf(R.string.parentLabelKey);
     final String parentLatKey = String.valueOf(R.string.parentLatKey);
     final String parentLongKey = String.valueOf(R.string.parentLongKey);
+    final String orientOverrideKey = String.valueOf(R.string.orientOverride);
+    final String orientOverrideBoolKey = String.valueOf(R.string.orientOverrideBool);
 
 //    @Override
 //    protected void onPause(){
@@ -70,40 +73,74 @@ public class CompassViewActivity extends AppCompatActivity {
             return;
         }
 
-
+        boolean overwriteOr = intent.getBooleanExtra(orientOverrideBoolKey, false);
+        System.out.println(overwriteOr);
         System.out.println("tracking " + parentLabelValue + " at lat " + parentLatValue + " long " + parentLongValue);
+        if(overwriteOr){
+            float newOr = intent.getFloatExtra(orientOverrideKey, defaultVal);
+            if(newOr == defaultVal){
+                Utilities.showAlert(this, "bad orientation problem");
+                return;
+            }
 
-        String[] names = new String[]{parentLabelValue};
-        float[] lat = new float[]{parentLatValue};
-        float[] lon = new float[]{parentLongValue};
+            String[] names = new String[]{parentLabelValue};
+            float[] lat = new float[]{parentLatValue};
+            float[] lon = new float[]{parentLongValue};
 
-        for (int i = 0; i < names.length; i++) {
-            AddLocationToActivity(names[i], lat[i], lon[i]);
+            for (int i = 0; i < names.length; i++) {
+                AddLocationToActivity(names[i], lat[i], lon[i]);
+            }
+
+            locationService = LocationService.singleton(this);
+            orientationService = OrientationService.singleton(this);
+
+            locationService.getLocation().observe(this, loc -> {
+                currentLocation.setLatitude(loc.first);
+                currentLocation.setLongitude(loc.second);
+
+                for (CompassLocationObject o_loc : locations){
+                    float angle = currentLocation.bearingTo(o_loc.getLocation());
+                    o_loc.getController().setLocAngle(angle);
+                    o_loc.getController().updateUI();
+                }
+            });
+            MutableLiveData<Float> mockDataSource = new MutableLiveData<>();
+            orientationService.setMockOrientationSource(mockDataSource);
+            mockDataSource.setValue(newOr);
+
+        } else {
+            String[] names = new String[]{parentLabelValue};
+            float[] lat = new float[]{parentLatValue};
+            float[] lon = new float[]{parentLongValue};
+
+            for (int i = 0; i < names.length; i++) {
+                AddLocationToActivity(names[i], lat[i], lon[i]);
+            }
+
+            locationService = LocationService.singleton(this);
+            orientationService = OrientationService.singleton(this);
+
+            locationService.getLocation().observe(this, loc -> {
+                currentLocation.setLatitude(loc.first);
+                currentLocation.setLongitude(loc.second);
+
+                for (CompassLocationObject o_loc : locations){
+                    float angle = currentLocation.bearingTo(o_loc.getLocation());
+                    o_loc.getController().setLocAngle(angle);
+                    o_loc.getController().updateUI();
+                }
+            });
+
+            orientationService.getOrientation().observe(this, orientation -> {
+                float piFloat = (float) Math.PI;
+                float angle = -1*orientation*180/piFloat;
+
+                for (CompassLocationObject o_loc : locations) {
+                    o_loc.getController().setOrient(angle);
+                    o_loc.getController().updateUI();
+                }
+            });
         }
-
-        locationService = LocationService.singleton(this);
-        orientationService = OrientationService.singleton(this);
-
-        locationService.getLocation().observe(this, loc -> {
-            currentLocation.setLatitude(loc.first);
-            currentLocation.setLongitude(loc.second);
-
-            for (CompassLocationObject o_loc : locations){
-                float angle = currentLocation.bearingTo(o_loc.getLocation());
-                o_loc.getController().setLocAngle(angle);
-                o_loc.getController().updateUI();
-            }
-        });
-
-        orientationService.getOrientation().observe(this, orientation -> {
-            float piFloat = (float) Math.PI;
-            float angle = -1*orientation*180/piFloat;
-
-            for (CompassLocationObject o_loc : locations) {
-                o_loc.getController().setOrient(angle);
-                o_loc.getController().updateUI();
-            }
-        });
     }
 
     public void onBackClicked(View view){
