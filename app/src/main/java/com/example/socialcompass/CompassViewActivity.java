@@ -61,6 +61,9 @@ public class CompassViewActivity extends AppCompatActivity {
         float defaultVal = -8888;
         Intent intent = getIntent();
         String parentLabelValue = intent.getStringExtra(parentLabelKey);
+        if(parentLabelValue.equals("")){
+            parentLabelValue = "Parents";
+        }
         float parentLatValue = intent.getFloatExtra(parentLatKey, defaultVal);
         float parentLongValue = intent.getFloatExtra(parentLongKey, defaultVal);
 

@@ -83,11 +83,9 @@ public class MainActivity extends AppCompatActivity {
 
         orientValue = (float) Math.toRadians(orientValue);
 
-        //create editTexts for each inputs
         EditText parentLabel = findViewById(R.id.parentLabel);
         EditText parentLat = findViewById(R.id.parentLat);
         EditText parentLong = findViewById(R.id.parentLong);
-
         validateLabelInput(parentLabel, parentLat, parentLong);
 
         String homeLabelValue = parentLabel.getText().toString();
