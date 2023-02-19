@@ -65,6 +65,6 @@ public class LocationService implements LocationListener {
         /* Unregister the location manager, and send any activities on this observe
         *  to the original MutableLiveData object.
         */
-        mockDataSource.observe((LifecycleOwner) activity, loc -> this.locationValue.setValue(loc));
+        mockDataSource.observeForever(loc -> this.locationValue.setValue(loc));
     }
 }

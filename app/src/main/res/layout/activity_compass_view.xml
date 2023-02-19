@@ -6,17 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".CompassViewActivity">
 
-    <Button
-        android:id="@+id/backToAddBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="30dp"
-        android:text="Change Orientation"
-        android:onClick="onBackClicked"
-        app:layout_constraintBottom_toBottomOf="@+id/clock"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clock"
         android:layout_width="wrap_content"
@@ -43,6 +32,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/compass"
             tools:layout_editor_absoluteY="225dp" />
+
+        <Button
+            android:id="@+id/backToAddBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onBackClicked"
+            android:text="Change Orientation"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.976" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
