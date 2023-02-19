@@ -86,7 +86,9 @@ public class MainActivity extends AppCompatActivity {
         EditText parentLabel = findViewById(R.id.parentLabel);
         EditText parentLat = findViewById(R.id.parentLat);
         EditText parentLong = findViewById(R.id.parentLong);
-        validateLabelInput(parentLabel, parentLat, parentLong);
+        if (!validateLabelInput(parentLabel, parentLat, parentLong)) {
+            return;
+        }
 
         String homeLabelValue = parentLabel.getText().toString();
         float homeLatValue = Float.parseFloat(parentLat.getText().toString());
@@ -107,9 +109,12 @@ public class MainActivity extends AppCompatActivity {
         boolean parentLabelBoolFilled = !parentLabel.getText().toString().isEmpty();
         boolean parentLatBoolFilled = !parentLat.getText().toString().isEmpty();
         boolean parentLongBoolFilled = !parentLong.getText().toString().isEmpty();
-
+        System.out.println(parentLabelBoolFilled);
+        System.out.println(parentLatBoolFilled);
+        System.out.println(parentLongBoolFilled);
         //if one is filled in home they must all be filled
         if(parentLabelBoolFilled || parentLatBoolFilled || parentLongBoolFilled){
+            System.out.println("TOP ONE");
             if(!(parentLatBoolFilled && parentLongBoolFilled)){
                 Utilities.showAlert(this, "Please do not leave unfilled fields for a location");
                 return false;
@@ -117,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if(!(parentLabelBoolFilled || parentLatBoolFilled || parentLongBoolFilled)){
+            System.out.println("BOTTOM ONE");
             Utilities.showAlert(this, "Please do not leave unfilled fields for a location");
             return false;
         }
