@@ -162,21 +162,6 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(parentLatKey, homeLatValue);
         intent.putExtra(parentLongKey, homeLongValue);
 
-
-//        EditText orientText = findViewById(R.id.orientInput);
-//        boolean orientBoolFilled = !orientText.getText().toString().isEmpty();
-//        if(!orientBoolFilled){
-//            startActivity(intent);
-//            return;
-//        }
-//        float orientValue = Float.parseFloat(orientText.getText().toString());
-//        if(orientValue < 0 || orientValue > 359){
-//            Utilities.showAlert(this, "Please valid new orientation");
-//            return;
-//        }
-//
-//        orientValue = (float) Math.toRadians(orientValue);
-//        intent.putExtra(orientOverrideKey, orientValue);
         startActivity(intent);
     }
 
