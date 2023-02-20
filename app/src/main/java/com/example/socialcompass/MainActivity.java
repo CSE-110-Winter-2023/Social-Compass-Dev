@@ -114,8 +114,8 @@ public class MainActivity extends AppCompatActivity {
         System.out.println(parentLongBoolFilled);
         //if one is filled in home they must all be filled
         if(parentLabelBoolFilled || parentLatBoolFilled || parentLongBoolFilled){
-            System.out.println("TOP ONE");
             if(!(parentLatBoolFilled && parentLongBoolFilled)){
+                System.out.println("TOP ONE");
                 Utilities.showAlert(this, "Please do not leave unfilled fields for a location");
                 return false;
             }
