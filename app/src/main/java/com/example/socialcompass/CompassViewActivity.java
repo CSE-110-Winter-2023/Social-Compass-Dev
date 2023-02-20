@@ -2,7 +2,7 @@ package com.example.socialcompass;
 
 
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.location.Location;
@@ -16,6 +16,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.MutableLiveData;
 
 public class CompassViewActivity extends AppCompatActivity {
     private OrientationService orientationService;
@@ -23,16 +24,20 @@ public class CompassViewActivity extends AppCompatActivity {
     Location currentLocation;
     private CompassLocationContainer locations;
     private int circleRadiusLayerOne;
+
+
     final String parentLabelKey = String.valueOf(R.string.parentLabelKey);
     final String parentLatKey = String.valueOf(R.string.parentLatKey);
     final String parentLongKey = String.valueOf(R.string.parentLongKey);
+    final String orientOverrideKey = String.valueOf(R.string.orientOverride);
 
-    @Override
-    protected void onPause(){
-        super.onPause();
-        orientationService.unregisterSensorListeners();
-        locationService.unregisterLocationListener();
-    }
+
+//    @Override
+//    protected void onPause(){
+//        super.onPause();
+//        orientationService.unregisterSensorListeners();
+//        locationService.unregisterLocationListener();
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,18 +58,20 @@ public class CompassViewActivity extends AppCompatActivity {
 
         circleRadiusLayerOne = (int) (180 * getResources().getDisplayMetrics().scaledDensity);
 
-        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-        String parentLabelValue = preferences.getString(parentLabelKey, "");
-        Float parentLatValue = preferences.getFloat(parentLatKey, 0);
-        Float parentLongValue = preferences.getFloat(parentLongKey, 0);
-
-        String[] names = new String[]{parentLabelValue};
-        float[] lat = new float[]{parentLatValue};
-        float[] lon = new float[]{parentLongValue};
-
-        for (int i = 0; i < names.length; i++) {
-            AddLocationToActivity(names[i], lat[i], lon[i]);
+        float defaultVal = -8888;
+        Intent intent = getIntent();
+        String parentLabelValue = intent.getStringExtra(parentLabelKey);
+        if(parentLabelValue == null || parentLabelValue.equals("")){
+            parentLabelValue = "Parents";
         }
+        float parentLatValue = intent.getFloatExtra(parentLatKey, defaultVal);
+        float parentLongValue = intent.getFloatExtra(parentLongKey, defaultVal);
+
+        float overwriteOrVal = intent.getFloatExtra(orientOverrideKey, defaultVal);
+
+        System.out.println(overwriteOrVal);
+        System.out.println("tracking " + parentLabelValue + " at lat " + parentLatValue + " long " + parentLongValue);
+        AddLocationToActivity(parentLabelValue, parentLatValue, parentLongValue);
 
         locationService = LocationService.singleton(this);
         orientationService = OrientationService.singleton(this);
@@ -82,18 +89,31 @@ public class CompassViewActivity extends AppCompatActivity {
 
         orientationService.getOrientation().observe(this, orientation -> {
             float piFloat = (float) Math.PI;
-            float angle = -1*orientation*180/piFloat;
+            float angle = -1 * orientation * 180 / piFloat;
 
             for (CompassLocationObject o_loc : locations) {
                 o_loc.getController().setOrient(angle);
                 o_loc.getController().updateUI();
             }
         });
+
+        if(overwriteOrVal != defaultVal) {
+            MutableLiveData<Float> mockDataSource = new MutableLiveData<>();
+            mockDataSource.setValue(overwriteOrVal);
+            orientationService.setMockOrientationSource(mockDataSource);
+
+        } else {
+            orientationService.registerSensorListener();
+        }
+    }
+
+    public void onBackClicked(View view){
+        finish();
     }
 
     private void AddLocationToActivity(String name, float lat, float lon) {
         CompassUIController ui_controller = new CompassUIController(0,0, circleRadiusLayerOne, null);
-        TextView cur_text_view = Utilities.createCompassLocationTextView(this, name, 0, 0, 20f, true);
+        TextView cur_text_view = Utilities.createCompassLocationTextView(this, name, 0, 0, 20f, false);
         ((ConstraintLayout) findViewById(R.id.clock)).addView(cur_text_view);
         ui_controller.setTextView(cur_text_view);
         locations.createAndAddLocation(name, lat, lon, ui_controller);

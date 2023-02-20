@@ -12,7 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 public class Utilities extends Activity {
 
-    public static void showAlert(Activity activity, String message) {
+    public static AlertDialog  showAlert(Activity activity, String message) {
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(activity);
 
         alertBuilder
@@ -25,6 +25,8 @@ public class Utilities extends Activity {
 
         AlertDialog alertDialog = alertBuilder.create();
         alertDialog.show();
+
+        return alertDialog;
     }
 
     public static boolean checkLatitude(float lat){
