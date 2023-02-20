@@ -2,8 +2,24 @@ package com.example.socialcompass;
 
 
 import static org.junit.Assert.assertEquals;
+import static org.robolectric.Shadows.shadowOf;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.ComponentName;
+import android.widget.Button;
+
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
+import androidx.test.rule.GrantPermissionRule;
+
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.shadows.ShadowActivity;
+import org.robolectric.shadows.ShadowAlertDialog;
 
 public class UtilitiesTest {
     @Test
@@ -44,3 +60,4 @@ public class UtilitiesTest {
         assertEquals(true, Utilities.checkLongitude(-180));
     }
 }
+
