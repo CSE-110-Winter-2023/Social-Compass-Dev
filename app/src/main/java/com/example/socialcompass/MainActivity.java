@@ -10,37 +10,53 @@ import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+
+/**
+ * First activity of the app to be launched. Used to input location to track and will redirect
+ * to the compass view when a button is clicked.
+ * File contains button click listeners along with methods needed for storing and loading
+ * from persistence and a method to validate inputs.
+ */
 public class MainActivity extends AppCompatActivity {
 
+    //keys stored in values/strings.xml used to store the keys for intents and preferences
     final String parentLabelKey = String.valueOf(R.string.parentLabelKey);
     final String parentLatKey = String.valueOf(R.string.parentLatKey);
     final String parentLongKey = String.valueOf(R.string.parentLongKey);
     final String orientOverrideKey = String.valueOf(R.string.orientOverride);
 
+    /**
+     * Called when activity is created, asks for preferences, displays activity_main.xml and loads from preferences
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //requesting location permissions
         if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 200);
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, 200);
         }
-
         setContentView(R.layout.activity_main);
         loadProfile();
     }
 
+    /**
+     * Load location coordinates and label from persistence.
+     */
     public void loadProfile(){
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 
         float defaultVal = -8888;
-        // Coordinates for Parent's Home
+        // get location coordinates and label from persistence
         String parentName = preferences.getString(parentLabelKey, "");
         float parentX = preferences.getFloat(parentLatKey, defaultVal);
         float parentY = preferences.getFloat(parentLongKey, defaultVal);
+        //parse lat and long as strings for display
         String parentXStr = String.valueOf(parentX);
         String parentYStr = String.valueOf(parentY);
+        //if empty turn to empty string so that hint can be shown on UI
         if(parentX == defaultVal){
             parentXStr = "";
         }
@@ -48,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
             parentYStr = "";
         }
 
+        //set text views to loaded variables
         EditText parentLabel = findViewById(R.id.parentLabel);
         parentLabel.setText(parentName);
 
@@ -58,6 +75,15 @@ public class MainActivity extends AppCompatActivity {
         homeLong.setText(parentYStr);
     }
 
+    /**
+     * Save a location to persistence
+     * @param locationLabel value of label to store
+     * @param locationLabelKey key of label to store
+     * @param locationLat value of label to store
+     * @param locationLatKey key of label to store
+     * @param locationLong value of label to store
+     * @param locationLongKey key of label to store
+     */
     public void saveLocation(String locationLabel, String locationLabelKey, float locationLat, String locationLatKey, float locationLong, String locationLongKey){
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -68,7 +94,13 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
+    /**
+     * Click listener for the OK button for orientation change.
+     * Checks if orientation is valid as well as all other inputs
+     * Saves location and starts an intent to compass view activity
+     */
     public void onOrientationChangeOkClicked(View view){
+        //checking if orientation input is valid
         EditText orientText = findViewById(R.id.orientInput);
         boolean orientBoolFilled = !orientText.getText().toString().isEmpty();
         if(!orientBoolFilled){
@@ -80,9 +112,10 @@ public class MainActivity extends AppCompatActivity {
             Utilities.showAlert(this, "Please valid new orientation");
             return;
         }
-
+        //converting to radians
         orientValue = (float) Math.toRadians(orientValue);
 
+        //validating other inputs
         EditText parentLabel = findViewById(R.id.parentLabel);
         EditText parentLat = findViewById(R.id.parentLat);
         EditText parentLong = findViewById(R.id.parentLong);
@@ -90,12 +123,13 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        //saving inputs
         String homeLabelValue = parentLabel.getText().toString();
         float homeLatValue = Float.parseFloat(parentLat.getText().toString());
         float homeLongValue = Float.parseFloat(parentLong.getText().toString());
         saveLocation(homeLabelValue, parentLabelKey, homeLatValue, parentLatKey, homeLongValue, parentLongKey);
 
-
+        //starting intent to compass view activity
         Intent intent = new Intent(this, CompassViewActivity.class);
         intent.putExtra(parentLabelKey, homeLabelValue);
         intent.putExtra(parentLatKey, homeLatValue);
@@ -104,25 +138,28 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * Method used to validate location label and coordinates
+     * @param parentLabel is not required
+     * @param parentLat required
+     * @param parentLong required
+     * @return true if valid iputs for loaction
+     */
     private boolean validateLabelInput(EditText parentLabel, EditText parentLat, EditText parentLong) {
         //check if there is a location that is not completely  filled
         boolean parentLabelBoolFilled = !parentLabel.getText().toString().isEmpty();
         boolean parentLatBoolFilled = !parentLat.getText().toString().isEmpty();
         boolean parentLongBoolFilled = !parentLong.getText().toString().isEmpty();
-        System.out.println(parentLabelBoolFilled);
-        System.out.println(parentLatBoolFilled);
-        System.out.println(parentLongBoolFilled);
+
+
         //if one is filled in home they must all be filled
         if(parentLabelBoolFilled || parentLatBoolFilled || parentLongBoolFilled){
             if(!(parentLatBoolFilled && parentLongBoolFilled)){
-                System.out.println("TOP ONE");
                 Utilities.showAlert(this, "Please do not leave unfilled fields for a location");
                 return false;
             }
         }
-
         if(!(parentLabelBoolFilled || parentLatBoolFilled || parentLongBoolFilled)){
-            System.out.println("BOTTOM ONE");
             Utilities.showAlert(this, "Please do not leave unfilled fields for a location");
             return false;
         }
@@ -141,27 +178,31 @@ public class MainActivity extends AppCompatActivity {
 
         return true;
     }
+
+    /**
+     * Click listener for Submit button if we do not want to overwrite orientation.
+     * Checks if inputs are valid then stores into persistence and starts intent.
+     */
     public void onSubmitClicked(View view){
-        //create editTexts for each inputs
+        //checks if inputs are valid
         EditText parentLabel = findViewById(R.id.parentLabel);
         EditText parentLat = findViewById(R.id.parentLat);
         EditText parentLong = findViewById(R.id.parentLong);
-
         if (!validateLabelInput(parentLabel, parentLat, parentLong)) {
             return;
         }
 
-        // If all validation checks have passed
+        //store inputs in persistence
         String homeLabelValue = parentLabel.getText().toString();
         float homeLatValue = Float.parseFloat(parentLat.getText().toString());
         float homeLongValue = Float.parseFloat(parentLong.getText().toString());
         saveLocation(homeLabelValue, parentLabelKey, homeLatValue, parentLatKey, homeLongValue, parentLongKey);
 
+        //starts intent to compass view activity
         Intent intent = new Intent(this, CompassViewActivity.class);
         intent.putExtra(parentLabelKey, homeLabelValue);
         intent.putExtra(parentLatKey, homeLatValue);
         intent.putExtra(parentLongKey, homeLongValue);
-
         startActivity(intent);
     }
 
