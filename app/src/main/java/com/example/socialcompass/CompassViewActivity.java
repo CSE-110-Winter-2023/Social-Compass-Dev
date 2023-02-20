@@ -1,11 +1,8 @@
 package com.example.socialcompass;
 
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
-
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.location.Location;
@@ -16,12 +13,19 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+
 public class CompassViewActivity extends AppCompatActivity {
     private OrientationService orientationService;
     private LocationService locationService;
     Location currentLocation;
     private CompassLocationContainer locations;
     private int circleRadiusLayerOne;
+    final String parentLabelKey = String.valueOf(R.string.parentLabelKey);
+    final String parentLatKey = String.valueOf(R.string.parentLatKey);
+    final String parentLongKey = String.valueOf(R.string.parentLongKey);
 
     @Override
     protected void onPause(){
@@ -49,13 +53,14 @@ public class CompassViewActivity extends AppCompatActivity {
 
         circleRadiusLayerOne = (int) (180 * getResources().getDisplayMetrics().scaledDensity);
 
-//        String[] names = new String[]{"Home", "Parents", "Friend"};
-//        float[] lat = new float[]{45.0819f, 20.0819f, 30.0819f};
-//        float[] lon = new float[]{73.3329f, -72.3329f, -50.3329f};
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        String parentLabelValue = preferences.getString(parentLabelKey, "");
+        Float parentLatValue = preferences.getFloat(parentLatKey, 0);
+        Float parentLongValue = preferences.getFloat(parentLongKey, 0);
 
-        String[] names = new String[]{"Home"};
-        float[] lat = new float[]{37f};
-        float[] lon = new float[]{-122f};
+        String[] names = new String[]{parentLabelValue};
+        float[] lat = new float[]{parentLatValue};
+        float[] lon = new float[]{parentLongValue};
 
         for (int i = 0; i < names.length; i++) {
             AddLocationToActivity(names[i], lat[i], lon[i]);

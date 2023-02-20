@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">SocialCompass</string>
     <string name="msg_location_permissions_denied">Please enable location permissions to display current location. You can enable these permissions in settings.</string>
+    <string name="parentLabelKey">parentLabelKey</string>
+    <string name="parentLatKey">parentLatKey</string>
+    <string name="parentLongKey">parentLongKey</string>
 </resources>

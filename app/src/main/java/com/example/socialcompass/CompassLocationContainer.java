@@ -1,7 +1,6 @@
 package com.example.socialcompass;
 
 import android.location.Location;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Iterator;

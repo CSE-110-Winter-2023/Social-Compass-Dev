@@ -1,10 +1,12 @@
 package com.example.socialcompass;
 
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 import android.location.Location;
+
+import org.junit.Before;
+import org.junit.Test;
 
 public class CompassLocationObjectTest {
     private CompassUIController controller;

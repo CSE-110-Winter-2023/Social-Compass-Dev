@@ -1,11 +1,10 @@
 package com.example.socialcompass;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
-
-import android.content.Context;
-import android.widget.TextView;
 
 public class CompassLocationContainerTest {
     private CompassLocationContainer emptyContainer;
