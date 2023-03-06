@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PreferencesActivity">
+
+    <TextView
+        android:id="@+id/titlePreferences"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="72dp"
+        android:layout_marginTop="116dp"
+        android:layout_marginEnd="73dp"
+        android:layout_marginBottom="65dp"
+        android:text="Preferences"
+        android:textSize="50dp"
+        app:layout_constraintBottom_toTopOf="@+id/addFriend"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/addFriend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="137dp"
+        android:layout_marginTop="65dp"
+        android:layout_marginEnd="138dp"
+        android:text="Add Friend"
+        android:textSize="28dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titlePreferences" />
+
+    <TextView
+        android:id="@+id/changeDisplayName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="67dp"
+        android:layout_marginTop="104dp"
+        android:layout_marginEnd="68dp"
+        android:text="Change Display Name"
+        android:textSize="28dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editUUID" />
+
+    <Button
+        android:id="@+id/submit_Btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="151dp"
+        android:layout_marginTop="59dp"
+        android:layout_marginEnd="169dp"
+        android:text="Submit"
+        android:onClick="onSubmitClicked"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editDisplayName" />
+
+    <EditText
+        android:id="@+id/editUUID"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="14dp"
+        android:ems="10"
+        android:hint="ID#"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toStartOf="@+id/add_Btn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addFriend" />
+
+    <EditText
+        android:id="@+id/editDisplayName"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="101dp"
+        android:ems="10"
+        android:hint="My Display Name"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/changeDisplayName" />
+
+    <TextView
+        android:id="@+id/add_Btn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="109dp"
+        android:layout_marginEnd="78dp"
+        android:layout_marginBottom="104dp"
+        android:text="+"
+        android:textSize="40dp"
+        android:clickable="true"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/changeDisplayName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/editUUID"
+        app:layout_constraintTop_toBottomOf="@+id/titlePreferences" />
+</androidx.constraintlayout.widget.ConstraintLayout>
