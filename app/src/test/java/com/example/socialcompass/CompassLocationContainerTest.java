@@ -16,17 +16,17 @@ public class CompassLocationContainerTest {
         containerWithTwoElements = new CompassLocationContainer();
 
         CompassUIController controller1 = new CompassUIController(0, 0, 0, null);
-        containerWithTwoElements.addLocation(new CompassLocationObject("location 1", null, controller1));
+        containerWithTwoElements.addLocation(new CompassLocationObject(, "location 1", null, controller1));
 
         CompassUIController controller2 = new CompassUIController(0, 0, 0, null);
-        containerWithTwoElements.addLocation(new CompassLocationObject("location 2", null, controller2));
+        containerWithTwoElements.addLocation(new CompassLocationObject(, "location 2", null, controller2));
 
     }
 
     @Test
     public void testAddLocation() {
         CompassUIController controller = new CompassUIController(0, 0, 0, null);
-        CompassLocationObject location = new CompassLocationObject("Test Location", null, controller);
+        CompassLocationObject location = new CompassLocationObject(, "Test Location", null, controller);
 
         emptyContainer.addLocation(location);
 
@@ -43,11 +43,11 @@ public class CompassLocationContainerTest {
     @Test
     public void testGetLocationAt() {
         CompassUIController controller1 = new CompassUIController(0, 0, 0, null);
-        CompassLocationObject location1 = new CompassLocationObject("Test Location 1", null, controller1);
+        CompassLocationObject location1 = new CompassLocationObject(, "Test Location 1", null, controller1);
         containerWithTwoElements.addLocation(location1);
 
         CompassUIController controller2 = new CompassUIController(0, 0, 0, null);
-        CompassLocationObject location2 = new CompassLocationObject("Test Location 2", null, controller2);
+        CompassLocationObject location2 = new CompassLocationObject(, "Test Location 2", null, controller2);
         containerWithTwoElements.addLocation(location2);
 
         assertEquals(location1, containerWithTwoElements.getLocationAt(2));

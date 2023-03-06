@@ -3,27 +3,60 @@
  */
 package com.example.socialcompass;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import android.location.Location;
+import android.util.Log;
+
+import androidx.annotation.AnyThread;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
+import java.util.concurrent.Executors;
 
 public class CompassLocationObject {
+    private String publickey;
     private String locationName;
     private Location location;
     private CompassUIController controller;
 
     /**
      * Constructor for creating a CompassLocationObject
-     * @param locationName name of the location
-     * @param location location object containing latitude and longitude
+     * @param publickey public key from remmote
      * @param controller controller object to handle updating UI for this location
      */
-    public CompassLocationObject(String locationName, Location location, CompassUIController controller) {
-        this.locationName = locationName;
-        this.location = location;
+    public CompassLocationObject(String publickey, CompassUIController controller) {
+        this.publickey = publickey;
         this.controller = controller;
+        this.location = new Location(publickey);
+
+        var remote = this.getRemote(this.publickey);
+        remote.observeForever(this::updateFromRemote);
 
         if (this.controller != null && this.controller.getTextView() != null){
             controller.getTextView().setText(this.locationName);
         }
+    }
+
+    public LiveData<RemoteLocation> getRemote(String publicCode) {
+
+        MutableLiveData<RemoteLocation> updatedLoc = new MutableLiveData<>();
+
+        var executor = Executors.newSingleThreadScheduledExecutor();
+        executor.scheduleAtFixedRate(() -> {
+            updatedLoc.postValue(LocationAPI.provide().getFromRemoteAPIAsync(publicCode));
+        }, 0, 3, SECONDS);
+
+        return updatedLoc;
+
+    }
+
+    public void updateFromRemote(RemoteLocation remoteLoc) {
+        Log.i("UPDATE",remoteLoc.toJSON());
+        this.location.setLatitude(remoteLoc.latitude);
+        this.location.setLongitude(remoteLoc.longitude);
+        this.locationName = remoteLoc.label;
+        this.syncName();
     }
 
     /**
@@ -58,6 +91,10 @@ public class CompassLocationObject {
         this.location = location;
     }
 
+    public void setLatLong(long lat, long lon) {
+        this.location.setLatitude(lat);
+        this.location.setLongitude(lon);
+    }
     /**
      * Returns the UI controller for the compass.
      * @return the UI controller for the compass
@@ -78,7 +115,7 @@ public class CompassLocationObject {
      * Updates the name of the location object with the current text in the UI controller's TextView.
      */
     public void syncName() {
-        this.locationName = controller.getTextView().getText().toString();
+        controller.getTextView().setText(this.locationName);
     }
 
 }

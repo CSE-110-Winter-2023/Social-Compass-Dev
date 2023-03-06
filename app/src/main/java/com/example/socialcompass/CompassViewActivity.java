@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -27,8 +28,6 @@ public class CompassViewActivity extends AppCompatActivity {
 
 
     final String parentLabelKey = String.valueOf(R.string.parentLabelKey);
-    final String parentLatKey = String.valueOf(R.string.parentLatKey);
-    final String parentLongKey = String.valueOf(R.string.parentLongKey);
     final String orientOverrideKey = String.valueOf(R.string.orientOverride);
 
 
@@ -64,14 +63,11 @@ public class CompassViewActivity extends AppCompatActivity {
         if(parentLabelValue == null || parentLabelValue.equals("")){
             parentLabelValue = "Parents";
         }
-        float parentLatValue = intent.getFloatExtra(parentLatKey, defaultVal);
-        float parentLongValue = intent.getFloatExtra(parentLongKey, defaultVal);
 
         float overwriteOrVal = intent.getFloatExtra(orientOverrideKey, defaultVal);
 
-        System.out.println(overwriteOrVal);
-        System.out.println("tracking " + parentLabelValue + " at lat " + parentLatValue + " long " + parentLongValue);
-        AddLocationToActivity(parentLabelValue, parentLatValue, parentLongValue);
+        System.out.println(parentLabelValue);
+        AddLocationToActivity(parentLabelValue);
 
         locationService = LocationService.singleton(this);
         orientationService = OrientationService.singleton(this);
@@ -111,12 +107,12 @@ public class CompassViewActivity extends AppCompatActivity {
         finish();
     }
 
-    private void AddLocationToActivity(String name, float lat, float lon) {
+    private void AddLocationToActivity(String publickey) {
         CompassUIController ui_controller = new CompassUIController(0,0, circleRadiusLayerOne, null);
-        TextView cur_text_view = Utilities.createCompassLocationTextView(this, name, 0, 0, 20f, false);
+        TextView cur_text_view = Utilities.createCompassLocationTextView(this, publickey, 0, 0, 20f, false);
         ((ConstraintLayout) findViewById(R.id.clock)).addView(cur_text_view);
         ui_controller.setTextView(cur_text_view);
-        locations.createAndAddLocation(name, lat, lon, ui_controller);
+        locations.createAndAddLocation(publickey, ui_controller);
     }
 
     public CompassLocationContainer getLocationContainer() {

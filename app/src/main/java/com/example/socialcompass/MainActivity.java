@@ -4,11 +4,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.LiveData;
 
 
 /**
@@ -94,6 +96,13 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
+    private void onLocChange(RemoteLocation location) {
+        Log.i("Acer", location.toJSON());
+
+
+    }
+
+
     /**
      * Click listener for the OK button for orientation change.
      * Checks if orientation is valid as well as all other inputs
@@ -101,41 +110,51 @@ public class MainActivity extends AppCompatActivity {
      */
     public void onOrientationChangeOkClicked(View view){
         //checking if orientation input is valid
-        EditText orientText = findViewById(R.id.orientInput);
-        boolean orientBoolFilled = !orientText.getText().toString().isEmpty();
-        if(!orientBoolFilled){
-            Utilities.showAlert(this, "Please input new orientation");
-            return;
-        }
-        float orientValue = Float.parseFloat(orientText.getText().toString());
-        if(orientValue < 0 || orientValue > 359){
-            Utilities.showAlert(this, "Please valid new orientation");
-            return;
-        }
-        //converting to radians
-        orientValue = (float) Math.toRadians(orientValue);
+        Log.i("Acer", "ok Clicked");
 
-        //validating other inputs
-        EditText parentLabel = findViewById(R.id.parentLabel);
-        EditText parentLat = findViewById(R.id.parentLat);
-        EditText parentLong = findViewById(R.id.parentLong);
-        if (!validateLabelInput(parentLabel, parentLat, parentLong)) {
-            return;
-        }
+        var locManager = new LocationManager();
+        LiveData<RemoteLocation> loc = locManager.getRemote("publicCode5");
 
-        //saving inputs
-        String homeLabelValue = parentLabel.getText().toString();
-        float homeLatValue = Float.parseFloat(parentLat.getText().toString());
-        float homeLongValue = Float.parseFloat(parentLong.getText().toString());
-        saveLocation(homeLabelValue, parentLabelKey, homeLatValue, parentLatKey, homeLongValue, parentLongKey);
+        loc.observe(this, this::onLocChange);
 
-        //starting intent to compass view activity
-        Intent intent = new Intent(this, CompassViewActivity.class);
-        intent.putExtra(parentLabelKey, homeLabelValue);
-        intent.putExtra(parentLatKey, homeLatValue);
-        intent.putExtra(parentLongKey, homeLongValue);
-        intent.putExtra(orientOverrideKey, orientValue);
-        startActivity(intent);
+
+
+
+//        EditText orientText = findViewById(R.id.orientInput);
+//        boolean orientBoolFilled = !orientText.getText().toString().isEmpty();
+//        if(!orientBoolFilled){
+//            Utilities.showAlert(this, "Please input new orientation");
+//            return;
+//        }
+//        float orientValue = Float.parseFloat(orientText.getText().toString());
+//        if(orientValue < 0 || orientValue > 359){
+//            Utilities.showAlert(this, "Please valid new orientation");
+//            return;
+//        }
+//        //converting to radians
+//        orientValue = (float) Math.toRadians(orientValue);
+//
+//        //validating other inputs
+//        EditText parentLabel = findViewById(R.id.parentLabel);
+//        EditText parentLat = findViewById(R.id.parentLat);
+//        EditText parentLong = findViewById(R.id.parentLong);
+//        if (!validateLabelInput(parentLabel, parentLat, parentLong)) {
+//            return;
+//        }
+//
+//        //saving inputs
+//        String homeLabelValue = parentLabel.getText().toString();
+//        float homeLatValue = Float.parseFloat(parentLat.getText().toString());
+//        float homeLongValue = Float.parseFloat(parentLong.getText().toString());
+//        saveLocation(homeLabelValue, parentLabelKey, homeLatValue, parentLatKey, homeLongValue, parentLongKey);
+//
+//        //starting intent to compass view activity
+//        Intent intent = new Intent(this, CompassViewActivity.class);
+//        intent.putExtra(parentLabelKey, homeLabelValue);
+//        intent.putExtra(parentLatKey, homeLatValue);
+//        intent.putExtra(parentLongKey, homeLongValue);
+//        intent.putExtra(orientOverrideKey, orientValue);
+//        startActivity(intent);
     }
 
     /**

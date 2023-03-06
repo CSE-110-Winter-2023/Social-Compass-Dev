@@ -6,11 +6,16 @@
 
 package com.example.socialcompass;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import android.location.Location;
+
+import androidx.annotation.AnyThread;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 public class CompassLocationContainer implements Iterable<CompassLocationObject> {
     private List<CompassLocationObject> locationList;
@@ -80,16 +85,11 @@ public class CompassLocationContainer implements Iterable<CompassLocationObject>
      * Creates a new CompassLocationObject with the given name, latitude, longitude and controller,
      * and adds it to the list.
      *
-     * @param locationName the name of the location
-     * @param latitude the latitude of the location
-     * @param longitude the longitude of the location
+     * @param publickey remote public key
      * @param controller the controller of the compass UI for this location
      */
-    public void createAndAddLocation(String locationName, double latitude, double longitude, CompassUIController controller) {
-        Location location = new Location(locationName);
-        location.setLatitude(latitude);
-        location.setLongitude(longitude);
-        CompassLocationObject compassLocation = new CompassLocationObject(locationName, location, controller);
+    public void createAndAddLocation(String publickey, CompassUIController controller) {
+        CompassLocationObject compassLocation = new CompassLocationObject(publickey, controller);
         locationList.add(compassLocation);
     }
 
