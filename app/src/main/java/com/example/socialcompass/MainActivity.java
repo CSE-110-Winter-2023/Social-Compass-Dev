@@ -1,5 +1,7 @@
 package com.example.socialcompass;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -11,6 +13,8 @@ import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.LiveData;
+
+import java.util.concurrent.Executors;
 
 
 /**

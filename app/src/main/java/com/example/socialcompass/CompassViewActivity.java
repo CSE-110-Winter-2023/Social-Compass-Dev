@@ -1,6 +1,8 @@
 package com.example.socialcompass;
 
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -19,12 +21,16 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.MutableLiveData;
 
+import java.util.concurrent.Executors;
+
 public class CompassViewActivity extends AppCompatActivity {
     private OrientationService orientationService;
     private LocationService locationService;
     Location currentLocation;
     private CompassLocationContainer locations;
     private int circleRadiusLayerOne;
+    final String userPrivateKey = "userPrivateKey";  //gonna need to have those random
+    final String userPublicKey = "userPublicKey";
 
 
     final String parentLabelKey = String.valueOf(R.string.parentLabelKey);
@@ -68,6 +74,7 @@ public class CompassViewActivity extends AppCompatActivity {
 
         System.out.println(parentLabelValue);
         AddLocationToActivity(parentLabelValue);
+        AddLocationToActivity("test");
 
         locationService = LocationService.singleton(this);
         orientationService = OrientationService.singleton(this);
@@ -75,6 +82,8 @@ public class CompassViewActivity extends AppCompatActivity {
         locationService.getLocation().observe(this, loc -> {
             currentLocation.setLatitude(loc.first);
             currentLocation.setLongitude(loc.second);
+
+            LocationAPI.provide().upsertToRemoteAPIAsync(userPrivateKey, userPublicKey, currentLocation);
 
             for (CompassLocationObject o_loc : locations){
                 float angle = currentLocation.bearingTo(o_loc.getLocation());
