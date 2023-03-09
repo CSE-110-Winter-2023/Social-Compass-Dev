@@ -5,42 +5,33 @@ import static org.junit.Assert.assertSame;
 
 import android.location.Location;
 
-import org.junit.Before;
-import org.junit.Test;
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+
+@RunWith(RobolectricTestRunner.class)
 public class CompassLocationObjectTest {
     private CompassUIController controller;
-    private Location location;
     private CompassLocationObject compassLocationObject;
+    private MockRemoteKey key1;
 
+    @Rule
+    public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
     @Before
     public void setup() {
         controller = new CompassUIController(0, 0, 0, null);
-        location = new Location("");
-        compassLocationObject = new CompassLocationObject("Test Location", location, controller);
+        key1 = new MockRemoteKey("Location 1", new RemoteLocation("Location 1", 0, 0));
+        compassLocationObject = new CompassLocationObject(key1, controller);
     }
 
     @Test
     public void testGetLocationName() {
-        assertEquals("Test Location", compassLocationObject.getLocationName());
-    }
-
-    @Test
-    public void testSetLocationName() {
-        compassLocationObject.setLocationName("New Location");
-        assertEquals("New Location", compassLocationObject.getLocationName());
-    }
-
-    @Test
-    public void testGetLocation() {
-        assertSame(location, compassLocationObject.getLocation());
-    }
-
-    @Test
-    public void testSetLocation() {
-        Location newLocation = new Location("Another Location");
-        compassLocationObject.setLocation(newLocation);
-        assertSame(newLocation, compassLocationObject.getLocation());
+        compassLocationObject.updateFromRemote(new RemoteLocation("Location 2", 0, 0));
+        assertEquals("Location 2", compassLocationObject.getLocationName());
     }
 
     @Test

@@ -3,27 +3,45 @@
  */
 package com.example.socialcompass;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import android.location.Location;
+import android.util.Log;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
+import java.util.concurrent.Executors;
 
 public class CompassLocationObject {
+    private RemoteKey publickey;
     private String locationName;
     private Location location;
     private CompassUIController controller;
 
+    private LiveData<RemoteLocation> remote;
+
     /**
      * Constructor for creating a CompassLocationObject
-     * @param locationName name of the location
-     * @param location location object containing latitude and longitude
+     * @param publickey public key from remmote
      * @param controller controller object to handle updating UI for this location
      */
-    public CompassLocationObject(String locationName, Location location, CompassUIController controller) {
-        this.locationName = locationName;
-        this.location = location;
+    public CompassLocationObject(RemoteKey publickey, CompassUIController controller) {
+        this.publickey = publickey;
         this.controller = controller;
+        this.location = new Location(publickey.getPublicKey());
 
-        if (this.controller != null && this.controller.getTextView() != null){
-            controller.getTextView().setText(this.locationName);
-        }
+        remote = this.publickey.initRemoteScheduler();
+        remote.observeForever(this::updateFromRemote);
+    }
+
+    public void updateFromRemote(RemoteLocation remoteLoc) {
+        Log.i("UPDATE",remoteLoc.toJSON());
+        this.location.setLatitude(remoteLoc.latitude);
+        this.location.setLongitude(remoteLoc.longitude);
+        this.locationName = remoteLoc.label;
+
+        this.syncName();
     }
 
     /**
@@ -32,14 +50,6 @@ public class CompassLocationObject {
      */
     public String getLocationName() {
         return locationName;
-    }
-
-    /**
-     * Sets the name of the location object.
-     * @param locationName the new name for the location object
-     */
-    public void setLocationName(String locationName) {
-        this.locationName = locationName;
     }
 
     /**
@@ -78,7 +88,13 @@ public class CompassLocationObject {
      * Updates the name of the location object with the current text in the UI controller's TextView.
      */
     public void syncName() {
-        this.locationName = controller.getTextView().getText().toString();
+        if (this.controller.getTextView() != null) {
+            controller.getTextView().setText(this.locationName);
+        }
+    }
+
+    public void destroy() {
+        remote.removeObserver(this::updateFromRemote);
     }
 
 }

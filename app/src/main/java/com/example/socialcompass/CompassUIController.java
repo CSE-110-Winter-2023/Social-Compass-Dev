@@ -89,6 +89,13 @@ public class CompassUIController implements UIController {
         return tv;
     }
 
+    public void setDistance(int distance) {
+        this.distance = distance;
+    }
+
+    public int getDistance() {
+        return this.distance;
+    }
     /**
      * Updates the UI for the compass. It calculates the new angle for the compass needle, based on
      * the location and orientation angles, and updates the position and rotation of the TextView
@@ -101,6 +108,6 @@ public class CompassUIController implements UIController {
         layoutParams1.circleAngle = angle;
         layoutParams1.circleRadius = distance;
         tv.setLayoutParams(layoutParams1);
-        tv.setRotation(angle);
+        tv.setRotation(0);
     }
 }
