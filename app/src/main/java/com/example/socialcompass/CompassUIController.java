@@ -108,6 +108,6 @@ public class CompassUIController implements UIController {
         layoutParams1.circleAngle = angle;
         layoutParams1.circleRadius = distance;
         tv.setLayoutParams(layoutParams1);
-        tv.setRotation(angle);
+        tv.setRotation(0);
     }
 }

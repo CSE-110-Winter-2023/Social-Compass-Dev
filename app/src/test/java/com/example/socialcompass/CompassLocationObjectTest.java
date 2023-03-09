@@ -17,7 +17,7 @@ public class CompassLocationObjectTest {
     public void setup() {
         controller = new CompassUIController(0, 0, 0, null);
         location = new Location("");
-        compassLocationObject = new CompassLocationObject(, "Test Location", location, controller);
+        compassLocationObject = new CompassLocationObject("Test Location", controller);
     }
 
     @Test

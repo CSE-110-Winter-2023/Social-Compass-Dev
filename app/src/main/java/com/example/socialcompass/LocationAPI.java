@@ -42,29 +42,35 @@ public class LocationAPI {
         var executor = Executors.newSingleThreadExecutor();
         var future = executor.submit(() -> getFromRemoteAPI(publicCode));
         try {
+            System.out.println("Waiting for future");
             return future.get(2, TimeUnit.SECONDS);
         } catch (ExecutionException | InterruptedException | TimeoutException e) {
             Log.i("[REMOTE ASYNC]", "Returning null remote location");
+            System.out.println("Returning null remote loc");
+            System.out.println(e);
             return null;
         }
     }
 
     public RemoteLocation getFromRemoteAPI(String publicCode){
-
+        System.out.println("getFromRemoteAPI");
         var request = new Request.Builder()
                 .url("https://socialcompass.goto.ucsd.edu/location/" + publicCode)
                 .method("GET", null)
                 .build();
-
+        System.out.println(request);
         try (var response = client.newCall(request).execute()) {
             assert response.body() != null;
             RemoteLocation body = fromJSON(response.body().string());
+
+            System.out.println("label of fetched loc: " + body.label);
 
             Log.i("Acer", "label of fetched loc: " + body.label);
 
             return body;
         } catch (Exception e) {
             Log.i("Acer", "Nope");
+            System.out.println("Nope");
 
             e.printStackTrace();
             return null;
@@ -97,7 +103,6 @@ public class LocationAPI {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
         RequestBody body = RequestBody.create(String.valueOf(noteJSON), JSON);
         var request = new Request.Builder()
                 .url("https://socialcompass.goto.ucsd.edu/location/" + userPublicKey)
@@ -118,10 +123,4 @@ public class LocationAPI {
 
         }
     }
-
-    //put own location continuously to server for others to track
-
-    //list of friends (UUID) that we need to track
-    //fetch them from
-
 }

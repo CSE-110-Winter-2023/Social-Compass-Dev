@@ -74,7 +74,7 @@ public class CompassViewActivity extends AppCompatActivity {
 
         System.out.println(parentLabelValue);
         AddLocationToActivity(parentLabelValue);
-        AddLocationToActivity("test");
+//        AddLocationToActivity("test");
 
         locationService = LocationService.singleton(this);
         orientationService = OrientationService.singleton(this);
@@ -87,6 +87,13 @@ public class CompassViewActivity extends AppCompatActivity {
 
             for (CompassLocationObject o_loc : locations){
                 float angle = currentLocation.bearingTo(o_loc.getLocation());
+
+                var trueDistance = currentLocation.distanceTo(o_loc.getLocation());
+                var relativeDistance = (int) ((trueDistance/6378153) * (circleRadiusLayerOne/3));
+//                System.out.println(circleRadiusLayerOne);
+//                System.out.println(relativeDistance);
+
+                o_loc.getController().setDistance(relativeDistance);
                 o_loc.getController().setLocAngle(angle);
                 o_loc.getController().updateUI();
             }
