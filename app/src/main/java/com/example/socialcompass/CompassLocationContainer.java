@@ -89,7 +89,7 @@ public class CompassLocationContainer implements Iterable<CompassLocationObject>
      * @param controller the controller of the compass UI for this location
      */
     public void createAndAddLocation(String publickey, CompassUIController controller) {
-        CompassLocationObject compassLocation = new CompassLocationObject(publickey, controller);
+        CompassLocationObject compassLocation = new CompassLocationObject(new RemoteKey(publickey), controller);
         locationList.add(compassLocation);
     }
 

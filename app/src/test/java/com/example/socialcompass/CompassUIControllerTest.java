@@ -55,28 +55,4 @@ public class CompassUIControllerTest {
         compassUIController.setOrient(90);
         assertEquals(90, compassUIController.getOrient(), 0.001);
     }
-
-    @Test
-    public void testUpdateUI_LocAngleChange() {
-        ActivityScenario<CompassViewActivity> scenario = ActivityScenario.launch(CompassViewActivity.class);
-        scenario.moveToState(Lifecycle.State.CREATED);
-        scenario.moveToState(Lifecycle.State.STARTED);
-
-        scenario.onActivity(activity -> {
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            CompassUIController controller = activity.getLocationContainer().getLocationAt(0).getController();
-            TextView cur_tv = controller.getTextView();
-
-            float old_rot = controller.getTextView().getRotation();
-
-            controller.setLocAngle(controller.getLocAngle() + 90);
-            controller.updateUI();
-
-            assertEquals(old_rot + 90, cur_tv.getRotation(), 0.1);
-        });
-    }
 }

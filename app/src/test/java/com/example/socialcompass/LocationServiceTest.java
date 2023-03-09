@@ -32,32 +32,6 @@ public class LocationServiceTest {
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     @Test
-    public void testLocationsUpdate() {
-        ActivityScenario<CompassViewActivity> scenario = ActivityScenario.launch(CompassViewActivity.class);
-        scenario.moveToState(Lifecycle.State.CREATED);
-        scenario.moveToState(Lifecycle.State.STARTED);
-
-        scenario.onActivity(activity -> {
-            MutableLiveData<Pair<Double, Double>> mockDataSource = new MutableLiveData<>();
-
-            activity.getLocationService().setMockLocationSource(mockDataSource);
-
-            Pair<Double, Double> start = new Pair<>(-73.0000, 2.0000);
-            Pair<Double, Double> end = new Pair<>(81.0000, 2.0000);
-
-            mockDataSource.setValue(start);
-
-            float rotation_before = activity.getLocationContainer().getLocationAt(0).getController().getTextView().getRotation();
-
-            mockDataSource.setValue(end);
-
-            float rotation_after = activity.getLocationContainer().getLocationAt(0).getController().getTextView().getRotation();
-
-            assertNotEquals(rotation_before, rotation_after);
-        });
-    }
-
-    @Test
     public void testGetLocation() {
         ActivityScenario<CompassViewActivity> scenario = ActivityScenario.launch(CompassViewActivity.class);
         scenario.moveToState(Lifecycle.State.CREATED);

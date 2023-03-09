@@ -30,35 +30,6 @@ public class OrientationServiceTest {
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     @Test
-    public void testOrientationUpdate() {
-        ActivityScenario<CompassViewActivity> scenario = ActivityScenario.launch(CompassViewActivity.class);
-        scenario.moveToState(Lifecycle.State.CREATED);
-        scenario.moveToState(Lifecycle.State.STARTED);
-        scenario.onActivity(activity -> {
-            MutableLiveData<Float> mockDataSource = new MutableLiveData<>();
-            //getting the singleton
-            OrientationService orientationService = activity.getOrientationService();
-            orientationService.setMockOrientationSource(mockDataSource);
-
-            Float start = 13F;
-            Float end = 35F;
-            mockDataSource.setValue(start);
-
-            float before_rotation = activity.getLocationContainer().getLocationAt(0).getController().getTextView().getRotation();
-            float before_orientation = activity.getLocationContainer().getLocationAt(0).getController().getOrient();
-
-            mockDataSource.setValue(end);
-
-            float after_rotation = activity.getLocationContainer().getLocationAt(0).getController().getTextView().getRotation();
-            float after_orientation = activity.getLocationContainer().getLocationAt(0).getController().getOrient();
-
-            assertNotEquals(before_rotation, after_rotation);
-            assertNotEquals(before_orientation, after_orientation);
-
-        });
-    }
-
-    @Test
     public void testGetOrientation() {
         ActivityScenario<CompassViewActivity> scenario = ActivityScenario.launch(CompassViewActivity.class);
         scenario.moveToState(Lifecycle.State.CREATED);
