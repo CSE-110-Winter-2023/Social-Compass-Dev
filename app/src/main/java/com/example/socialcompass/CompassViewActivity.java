@@ -161,4 +161,9 @@ public class CompassViewActivity extends AppCompatActivity {
         }
         return super.dispatchTouchEvent(event);
     }
+    public void onSettingsClicked(View view) {
+        //starts intent to preferences view activity
+        Intent intent = new Intent(this, PreferencesActivity.class);
+        startActivity(intent);
+    }
 }
