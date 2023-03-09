@@ -36,7 +36,7 @@ public class LocationAPI {
         }
         return instance;
     }
-
+    //d
     @AnyThread
     public RemoteLocation getFromRemoteAPIAsync(String publicCode) {
         var executor = Executors.newSingleThreadExecutor();
