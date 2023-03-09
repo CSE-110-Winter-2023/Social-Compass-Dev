@@ -19,6 +19,8 @@ public class CompassLocationObject {
     private Location location;
     private CompassUIController controller;
 
+    private LiveData<RemoteLocation> remote;
+
     /**
      * Constructor for creating a CompassLocationObject
      * @param publickey public key from remmote
@@ -29,7 +31,7 @@ public class CompassLocationObject {
         this.controller = controller;
         this.location = new Location(publickey.getPublicKey());
 
-        LiveData<RemoteLocation> remote = this.publickey.initRemoteScheduler();
+        remote = this.publickey.initRemoteScheduler();
         remote.observeForever(this::updateFromRemote);
     }
 
@@ -89,6 +91,10 @@ public class CompassLocationObject {
         if (this.controller.getTextView() != null) {
             controller.getTextView().setText(this.locationName);
         }
+    }
+
+    public void destroy() {
+        remote.removeObserver(this::updateFromRemote);
     }
 
 }

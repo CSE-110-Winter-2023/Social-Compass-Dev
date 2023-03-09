@@ -33,7 +33,7 @@ public class UtilitiesTestRobolectric {
     public void testShowAlter() {
         final String testAlterStr = "testAlertStr";
 
-        MainActivity mainActivity = Robolectric.buildActivity(MainActivity.class).create().get();
+        PreferencesActivity mainActivity = Robolectric.buildActivity(PreferencesActivity.class).create().get();
 
         Dialog expected = Utilities.showAlert(mainActivity, testAlterStr);
 

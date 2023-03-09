@@ -8,9 +8,12 @@ package com.example.socialcompass;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+import android.app.Activity;
 import android.location.Location;
+import android.widget.TextView;
 
 import androidx.annotation.AnyThread;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,7 +21,16 @@ import java.util.List;
 import java.util.concurrent.Executors;
 
 public class CompassLocationContainer implements Iterable<CompassLocationObject> {
+    private static CompassLocationContainer instance;
     private List<CompassLocationObject> locationList;
+
+
+    public static CompassLocationContainer singleton() {
+        if (instance == null){
+            instance = new CompassLocationContainer();
+        }
+        return instance;
+    }
 
     /**
      * Constructs a new instance of CompassLocationContainer.
@@ -88,6 +100,7 @@ public class CompassLocationContainer implements Iterable<CompassLocationObject>
      * @param publickey remote public key
      * @param controller the controller of the compass UI for this location
      */
+
     public void createAndAddLocation(String publickey, CompassUIController controller) {
         CompassLocationObject compassLocation = new CompassLocationObject(new RemoteKey(publickey), controller);
         locationList.add(compassLocation);
@@ -110,5 +123,13 @@ public class CompassLocationContainer implements Iterable<CompassLocationObject>
     @Override
     public Iterator<CompassLocationObject> iterator() {
         return locationList.iterator();
+    }
+
+    public void clear() {
+        for (CompassLocationObject loc : locationList) {
+            loc.destroy();
+        }
+
+        locationList = new ArrayList<>();
     }
 }

@@ -1,14 +1,12 @@
 package com.example.socialcompass;
 
-
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.location.Location;
 import android.os.Bundle;
+
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
 
 import java.util.concurrent.Executors;
 
@@ -32,9 +31,7 @@ public class CompassViewActivity extends AppCompatActivity {
     final String userPrivateKey = "userPrivateKey";  //gonna need to have those random
     final String userPublicKey = "userPublicKey";
 
-
-    final String parentLabelKey = String.valueOf(R.string.parentLabelKey);
-    final String orientOverrideKey = String.valueOf(R.string.orientOverride);
+    private FriendViewModel viewModel;
 
 
 //    @Override
@@ -49,11 +46,13 @@ public class CompassViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compass_view);
 
+        viewModel = new ViewModelProvider(this).get(FriendViewModel.class);
+
         currentLocation = new Location("User Location");
         currentLocation.setLatitude(90.0000);
         currentLocation.setLongitude(90.0000);
 
-        locations = new CompassLocationContainer();
+        locations = CompassLocationContainer.singleton();
 
         if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
@@ -63,18 +62,10 @@ public class CompassViewActivity extends AppCompatActivity {
 
         circleRadiusLayerOne = (int) (180 * getResources().getDisplayMetrics().scaledDensity);
 
-        float defaultVal = -8888;
-        Intent intent = getIntent();
-        String parentLabelValue = intent.getStringExtra(parentLabelKey);
-        if(parentLabelValue == null || parentLabelValue.equals("")){
-            parentLabelValue = "Parents";
+        for (userID uuid : viewModel.getFriendsSync()) {
+            Log.i("[HERE]", uuid.friendID);
+            AddLocationToActivity(uuid.friendID);
         }
-
-        float overwriteOrVal = intent.getFloatExtra(orientOverrideKey, defaultVal);
-
-        System.out.println(parentLabelValue);
-        AddLocationToActivity(parentLabelValue);
-//        AddLocationToActivity("test");
 
         locationService = LocationService.singleton(this);
         orientationService = OrientationService.singleton(this);
@@ -108,15 +99,7 @@ public class CompassViewActivity extends AppCompatActivity {
                 o_loc.getController().updateUI();
             }
         });
-
-        if(overwriteOrVal != defaultVal) {
-            MutableLiveData<Float> mockDataSource = new MutableLiveData<>();
-            mockDataSource.setValue(overwriteOrVal);
-            orientationService.setMockOrientationSource(mockDataSource);
-
-        } else {
-            orientationService.registerSensorListener();
-        }
+        orientationService.registerSensorListener();
     }
 
     public void onBackClicked(View view){
@@ -164,6 +147,20 @@ public class CompassViewActivity extends AppCompatActivity {
     public void onSettingsClicked(View view) {
         //starts intent to preferences view activity
         Intent intent = new Intent(this, PreferencesActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, PreferencesActivity.REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PreferencesActivity.REQUEST_CODE && resultCode == RESULT_OK) {
+            // Called when finished from PreferenceActivity and a name was added
+            locations.clear();
+
+            for (userID uuid : viewModel.getFriendsSync()) {
+                Log.i("[ONFINISH]", uuid.friendID);
+                AddLocationToActivity(uuid.friendID);
+            }
+        }
     }
 }
