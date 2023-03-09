@@ -2,6 +2,7 @@ package com.example.socialcompass;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,7 +36,16 @@ public class PreferencesActivity extends AppCompatActivity {
     }
 
     public void onSubmitClicked(View view){
-        setResult(this.result);
+
+        String newDisplayName = ((TextView) findViewById(R.id.editDisplayName)).getText().toString();
+        Intent intent=new Intent();
+        if(newDisplayName.equals("")){
+            intent.putExtra("newDisplayName", "error");
+        } else {
+            intent.putExtra("newDisplayName", newDisplayName);
+        }
+
+        setResult(this.result, intent);
         finish();
     }
 
