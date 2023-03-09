@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -11,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 public class PreferencesActivity extends AppCompatActivity {
 
     private FriendViewModel viewModel;
-    private Button addFriendButton;
+    private TextView addFriendButton;
     private EditText newFriend;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +26,10 @@ public class PreferencesActivity extends AppCompatActivity {
         this.addFriendButton = this.findViewById(R.id.add_Btn);
 
         addFriendButton.setOnClickListener(this::onAddClicked);
+    }
+
+    public void onSubmitClicked(View view){
+        finish();
     }
 
 
