@@ -16,7 +16,15 @@ import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import java.util.UUID;
+
 public class Utilities {
+
+    public static String createUUID()
+    {
+        String uniqueID = UUID.randomUUID().toString();
+        return uniqueID;
+    }
 
     /**
      * Shows an alert dialog with the specified message.
