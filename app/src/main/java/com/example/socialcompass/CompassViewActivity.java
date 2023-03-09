@@ -28,10 +28,10 @@ public class CompassViewActivity extends AppCompatActivity {
     Location currentLocation;
     private CompassLocationContainer locations;
     private int circleRadiusLayerOne;
-    final String userPrivateKey = "userPrivateKey";  //gonna need to have those random
-    final String userPublicKey = "userPublicKey";
-
+    final String userPrivateKey = "team4PrivateKey";
+    final String userPublicKey = "team4PublicKey";
     private FriendViewModel viewModel;
+    String ourDisplayName = LocationAPI.provide().getFromRemoteAPIAsync(userPublicKey).label;
 
 
 //    @Override
@@ -74,7 +74,7 @@ public class CompassViewActivity extends AppCompatActivity {
             currentLocation.setLatitude(loc.first);
             currentLocation.setLongitude(loc.second);
 
-            LocationAPI.provide().upsertToRemoteAPIAsync(userPrivateKey, userPublicKey, currentLocation);
+            LocationAPI.provide().upsertToRemoteAPIAsync(userPrivateKey, userPublicKey, currentLocation, this.ourDisplayName);
 
             for (CompassLocationObject o_loc : locations){
                 float angle = currentLocation.bearingTo(o_loc.getLocation());
@@ -150,11 +150,32 @@ public class CompassViewActivity extends AppCompatActivity {
         startActivityForResult(intent, PreferencesActivity.REQUEST_CODE);
     }
 
+
+    public void setDisplayName(String name){
+        this.ourDisplayName = name;
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        String fetchedDisplayName = data.getStringExtra("newDisplayName");
+        if(!fetchedDisplayName.equals("error")){
+            setDisplayName(fetchedDisplayName);
+        }
+
+
+
         if (requestCode == PreferencesActivity.REQUEST_CODE && resultCode == RESULT_OK) {
             // Called when finished from PreferenceActivity and a name was added
+
+//            String fetchedDisplayName = data.getStringExtra("newDisplayName");
+//            setDisplayName(fetchedDisplayName);
+//            if(!fetchedDisplayName.equals("error")){
+//                setDisplayName("joe");
+//            }
+//            Log.i("Debuug", "YOOOOOOOOO" + fetchedDisplayName);
+
             locations.clear();
 
             for (userID uuid : viewModel.getFriendsSync()) {
