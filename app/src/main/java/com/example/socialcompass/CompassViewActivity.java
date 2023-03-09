@@ -31,7 +31,7 @@ public class CompassViewActivity extends AppCompatActivity {
     final String userPrivateKey = "team4PrivateKey";
     final String userPublicKey = "team4PublicKey";
     private FriendViewModel viewModel;
-    String ourDisplayName = "team4";
+    String ourDisplayName = LocationAPI.provide().getFromRemoteAPIAsync(userPublicKey).label;
 
 
 //    @Override
