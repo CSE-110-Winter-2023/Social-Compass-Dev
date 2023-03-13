@@ -54,5 +54,4 @@ public class ZoomManager {
         return currLocation;
     }
 
-
 }

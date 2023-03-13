@@ -2,16 +2,29 @@ package com.example.socialcompass;
 
 import static com.example.socialcompass.ZoomManager.getOwnLocation;
 
+import android.app.Activity;
 import android.location.Location;
+import android.view.View;
 
 public interface ZoomLevel {
-    public void setUI();
+    public void setUI(Activity activity);
     public void setDistances();
 }
 
 class Zoom1 implements ZoomLevel {
-    public void setUI(){
-
+    public void setUI(Activity activity){
+        var circle33 = activity.findViewById(R.id.circle_33);
+        var circle66 = activity.findViewById(R.id.circle_66);
+        var circle25 = activity.findViewById(R.id.circle_25);
+        var circle50 = activity.findViewById(R.id.circle_50);
+        var circle75 = activity.findViewById(R.id.circle_75);
+        var circle100 = activity.findViewById(R.id.circle_100);
+        circle33.setVisibility(View.INVISIBLE);
+        circle66.setVisibility(View.INVISIBLE);
+        circle25.setVisibility(View.INVISIBLE);
+        circle50.setVisibility(View.INVISIBLE);
+        circle75.setVisibility(View.INVISIBLE);
+        circle100.setVisibility(View.VISIBLE);
     }
 
     public void setDistances(){
@@ -23,10 +36,10 @@ class Zoom1 implements ZoomLevel {
             CompassUIController controller = co.getController();
 
             if(distance <= 1609.34) {
-                controller.setDistance(55); //55 percent
+                controller.setDistance(240); //55 percent
             }
             else {
-                controller.setDistance(100); // on radius
+                controller.setDistance(560); // on radius
                 //TODO turn into a dot
             }
         }
@@ -34,8 +47,19 @@ class Zoom1 implements ZoomLevel {
 }
 
 class Zoom2 implements ZoomLevel {
-    public void setUI(){
-
+    public void setUI(Activity activity){
+        var circle33 = activity.findViewById(R.id.circle_33);
+        var circle66 = activity.findViewById(R.id.circle_66);
+        var circle25 = activity.findViewById(R.id.circle_25);
+        var circle50 = activity.findViewById(R.id.circle_50);
+        var circle75 = activity.findViewById(R.id.circle_75);
+        var circle100 = activity.findViewById(R.id.circle_100);
+        circle33.setVisibility(View.INVISIBLE);
+        circle66.setVisibility(View.INVISIBLE);
+        circle25.setVisibility(View.INVISIBLE);
+        circle50.setVisibility(View.VISIBLE);
+        circle75.setVisibility(View.INVISIBLE);
+        circle100.setVisibility(View.VISIBLE);
     }
     public void setDistances(){
         Location ownLocation = getOwnLocation();
@@ -52,7 +76,7 @@ class Zoom2 implements ZoomLevel {
                 controller.setDistance(66); //66 percent
             }
             else {
-                controller.setDistance(100); // on radius
+                controller.setDistance(560); // on radius
                 //TODO turn into a dot
             }
         }
@@ -60,8 +84,19 @@ class Zoom2 implements ZoomLevel {
 }
 
 class Zoom3 implements ZoomLevel {
-    public void setUI(){
-
+    public void setUI(Activity activity){
+        var circle33 = activity.findViewById(R.id.circle_33);
+        var circle66 = activity.findViewById(R.id.circle_66);
+        var circle25 = activity.findViewById(R.id.circle_25);
+        var circle50 = activity.findViewById(R.id.circle_50);
+        var circle75 = activity.findViewById(R.id.circle_75);
+        var circle100 = activity.findViewById(R.id.circle_100);
+        circle33.setVisibility(View.VISIBLE);
+        circle66.setVisibility(View.VISIBLE);
+        circle25.setVisibility(View.INVISIBLE);
+        circle50.setVisibility(View.INVISIBLE);
+        circle75.setVisibility(View.INVISIBLE);
+        circle100.setVisibility(View.VISIBLE);
     }
     public void setDistances(){
         Location ownLocation = getOwnLocation();
@@ -75,13 +110,13 @@ class Zoom3 implements ZoomLevel {
                 controller.setDistance(25); //25 percent
             }
             else if(distance <= 16093.4) {
-                controller.setDistance(50); //50 percent
+                controller.setDistance(240); //50 percent
             }
             else if(distance <= 804672) {
                 controller.setDistance(75); //75 percent
             }
             else {
-                controller.setDistance(100); // on radius
+                controller.setDistance(560); // on radius
                 //TODO turn into a dot
             }
         }
@@ -89,8 +124,19 @@ class Zoom3 implements ZoomLevel {
 }
 
 class Zoom4 implements ZoomLevel {
-    public void setUI(){
-
+    public void setUI(Activity activity){
+        var circle33 = activity.findViewById(R.id.circle_33);
+        var circle66 = activity.findViewById(R.id.circle_66);
+        var circle25 = activity.findViewById(R.id.circle_25);
+        var circle50 = activity.findViewById(R.id.circle_50);
+        var circle75 = activity.findViewById(R.id.circle_75);
+        var circle100 = activity.findViewById(R.id.circle_100);
+        circle33.setVisibility(View.INVISIBLE);
+        circle66.setVisibility(View.INVISIBLE);
+        circle25.setVisibility(View.VISIBLE);
+        circle50.setVisibility(View.VISIBLE);
+        circle75.setVisibility(View.VISIBLE);
+        circle100.setVisibility(View.VISIBLE);
     }
 
     public void setDistances(){
@@ -114,7 +160,7 @@ class Zoom4 implements ZoomLevel {
                 controller.setDistance(80); //80 percent
             }
             else {
-                controller.setDistance(100); // on radius
+                controller.setDistance(560); // on radius
                 //TODO turn into a dot
             }
         }
