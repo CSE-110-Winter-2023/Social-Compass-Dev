@@ -36,7 +36,7 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/circle_100"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.64" />
+            app:layout_constraintVertical_bias="0.0" />
 
         <ImageView
             android:id="@+id/circle_100"
@@ -100,6 +100,35 @@
             app:layout_constraintEnd_toEndOf="@+id/circle_75"
             app:layout_constraintStart_toStartOf="@+id/circle_75"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/minus_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/minus"
+            android:clickable="true"
+            android:onClick="onMinusClicked"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/circle_75"
+            app:layout_constraintTop_toBottomOf="@+id/plus_btn"/>
+
+        <ImageView
+            android:id="@+id/plus_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="500dp"
+            android:layout_marginEnd="16dp"
+            android:clickable="true"
+            android:onClick="onPlusClicked"
+            android:src="@drawable/plus"
+            app:layout_constraintBottom_toTopOf="@+id/minus_btn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/circle_75"
+            app:layout_constraintTop_toTopOf="@+id/circle_100" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

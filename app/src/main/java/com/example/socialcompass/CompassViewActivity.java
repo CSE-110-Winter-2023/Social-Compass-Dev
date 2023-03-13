@@ -3,6 +3,8 @@ package com.example.socialcompass;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Rect;
 import android.location.Location;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,6 +34,7 @@ public class CompassViewActivity extends AppCompatActivity {
     final String userPrivateKey = "team4PrivateKey";
     final String userPublicKey = "team4PublicKey";
     private FriendViewModel viewModel;
+    private ZoomManager zoomManager;
     String ourDisplayName = LocationAPI.provide().getFromRemoteAPIAsync(userPublicKey).label;
 
 
@@ -45,7 +49,8 @@ public class CompassViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compass_view);
-
+        zoomManager = new ZoomManager();
+        zoomManager.setZoomLevelNumber(2);
         viewModel = new ViewModelProvider(this).get(FriendViewModel.class);
 
         currentLocation = new Location("User Location");
@@ -184,4 +189,52 @@ public class CompassViewActivity extends AppCompatActivity {
             }
         }
     }
+    public void onPlusClicked(View view) {
+        if (zoomManager.getZoomLevelNumber() == 4)
+        {
+            return;
+        }
+        if(zoomManager.getZoomLevelNumber() == 1) {
+            ImageView minus = findViewById(R.id.minus_btn);
+            minus.setColorFilter(null);
+            minus.setImageAlpha(255);
+        }
+        if (zoomManager.getZoomLevelNumber() == 3)
+        {
+            // https://stackoverflow.com/questions/28308325/androidset-gray-scale-filter-to-imageview
+            ColorMatrix matrix = new ColorMatrix();
+            matrix.setSaturation(0);  //0 means grayscale
+            matrix.reset();
+            ColorMatrixColorFilter cf = new ColorMatrixColorFilter(matrix);
+            ImageView plus = findViewById(R.id.plus_btn);
+            plus.setColorFilter(cf);
+            plus.setImageAlpha(128);
+
+        }
+        zoomManager.setZoomLevelNumber(zoomManager.getZoomLevelNumber()+1);
+    }
+
+    public void onMinusClicked(View view) {
+        if (zoomManager.getZoomLevelNumber() == 1)
+        {
+            return;
+        }
+        if(zoomManager.getZoomLevelNumber() == 4) {
+            ImageView plus = findViewById(R.id.plus_btn);
+            plus.setColorFilter(null);
+            plus.setImageAlpha(255);
+        }
+        if (zoomManager.getZoomLevelNumber() == 2)
+        {
+            // https://stackoverflow.com/questions/28308325/androidset-gray-scale-filter-to-imageview
+            ColorMatrix matrix = new ColorMatrix();
+            matrix.setSaturation(0);  //0 means grayscale
+            ColorMatrixColorFilter cf = new ColorMatrixColorFilter(matrix);
+            ImageView minus = findViewById(R.id.minus_btn);
+            minus.setColorFilter(cf);
+            minus.setImageAlpha(128);
+        }
+        zoomManager.setZoomLevelNumber(zoomManager.getZoomLevelNumber()-1);
+    }
+
 }
