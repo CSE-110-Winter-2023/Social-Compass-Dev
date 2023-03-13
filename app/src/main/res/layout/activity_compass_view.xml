@@ -22,29 +22,83 @@
 
 
         <ImageView
-            android:id="@+id/compass"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="50dp"
-            android:layout_marginEnd="50dp"
-            android:contentDescription="Compass graphic"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/compass" />
-
-        <ImageView
             android:id="@+id/settings_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="26dp"
             android:layout_marginBottom="656dp"
-            android:src="@drawable/settings_icon"
             android:clickable="true"
+            android:contentDescription="settings"
             android:onClick="onSettingsClicked"
+            android:src="@drawable/settings_icon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/circle_100"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.64" />
+
+        <ImageView
+            android:id="@+id/circle_100"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/circle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.508"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <ImageView
+            android:id="@+id/circle_75"
+            android:layout_width="262.5dp"
+            android:layout_height="575dp"
+            android:src="@drawable/circle"
+            app:layout_constraintBottom_toBottomOf="@+id/circle_100"
+            app:layout_constraintEnd_toEndOf="@+id/circle_100"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintStart_toStartOf="@+id/circle_100"
+            app:layout_constraintTop_toTopOf="@+id/circle_100" />
+
+        <ImageView
+            android:id="@+id/circle_50"
+            android:layout_width="175dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/circle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/circle_75"
+            app:layout_constraintStart_toStartOf="@+id/circle_75"
+            app:layout_constraintTop_toTopOf="@+id/circle_100" />
+
+        <ImageView
+            android:id="@+id/circle_25"
+            android:layout_width="86.7dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/circle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/circle_50"
+            app:layout_constraintStart_toStartOf="@+id/circle_50"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/circle_33"
+            android:layout_width="115.5dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/circle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/circle_50"
+            app:layout_constraintStart_toStartOf="@+id/circle_50"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/circle_66"
+            android:layout_width="231dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/circle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/circle_75"
+            app:layout_constraintStart_toStartOf="@+id/circle_75"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
