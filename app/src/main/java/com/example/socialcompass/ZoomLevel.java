@@ -36,10 +36,10 @@ class Zoom1 implements ZoomLevel {
             CompassUIController controller = co.getController();
 
             if(distance <= 1609.34) {
-                controller.setDistance(55); //55 percent
+                controller.setDistance(240); //55 percent
             }
             else {
-                controller.setDistance(100); // on radius
+                controller.setDistance(560); // on radius
                 //TODO turn into a dot
             }
         }
@@ -76,7 +76,7 @@ class Zoom2 implements ZoomLevel {
                 controller.setDistance(66); //66 percent
             }
             else {
-                controller.setDistance(100); // on radius
+                controller.setDistance(560); // on radius
                 //TODO turn into a dot
             }
         }
@@ -110,13 +110,13 @@ class Zoom3 implements ZoomLevel {
                 controller.setDistance(25); //25 percent
             }
             else if(distance <= 16093.4) {
-                controller.setDistance(50); //50 percent
+                controller.setDistance(240); //50 percent
             }
             else if(distance <= 804672) {
                 controller.setDistance(75); //75 percent
             }
             else {
-                controller.setDistance(100); // on radius
+                controller.setDistance(560); // on radius
                 //TODO turn into a dot
             }
         }
@@ -160,7 +160,7 @@ class Zoom4 implements ZoomLevel {
                 controller.setDistance(80); //80 percent
             }
             else {
-                controller.setDistance(100); // on radius
+                controller.setDistance(560); // on radius
                 //TODO turn into a dot
             }
         }

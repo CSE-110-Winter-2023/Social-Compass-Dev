@@ -81,8 +81,6 @@ public class CompassViewActivity extends AppCompatActivity {
 
                 var trueDistance = currentLocation.distanceTo(o_loc.getLocation());
                 var relativeDistance = (int) ((trueDistance/6378153) * (circleRadiusLayerOne/3));
-//                System.out.println(circleRadiusLayerOne);
-//                System.out.println(relativeDistance);
 
                 o_loc.getController().setDistance(relativeDistance);
                 o_loc.getController().setLocAngle(angle);
