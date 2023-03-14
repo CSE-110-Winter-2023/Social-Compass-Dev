@@ -16,6 +16,7 @@ public class CompassUIController implements UIController {
     private float orientAngle;
     private float distance;
     private TextView tv;
+    private TextView tvDot;
 
     /**
      * Constructor for the CompassUIController class. It initializes the instance variables for the
@@ -32,6 +33,7 @@ public class CompassUIController implements UIController {
         this.orientAngle = orientAngle;
         this.distance = distance;
         this.tv = tv;
+        this.tvDot = tv;
     }
 
     /**
@@ -80,6 +82,10 @@ public class CompassUIController implements UIController {
         this.tv = tv;
     }
 
+    public void setDotTextView(TextView tvDot) {
+        this.tvDot = tvDot;
+    }
+
     /**
      * Returns the current TextView used to display the compass needle.
      *
@@ -105,9 +111,14 @@ public class CompassUIController implements UIController {
     public void updateUI(){
         float angle = locAngle + orientAngle;
         ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) tv.getLayoutParams();
+        ConstraintLayout.LayoutParams layoutParamsDot = (ConstraintLayout.LayoutParams) tvDot.getLayoutParams();
+        layoutParamsDot.circleAngle = angle;
+        layoutParamsDot.circleRadius = 540;
         layoutParams1.circleAngle = angle;
         layoutParams1.circleRadius = ZoomLevel.singleton(null).calculateDistance(this.distance);
+        tvDot.setLayoutParams(layoutParamsDot);
         tv.setLayoutParams(layoutParams1);
         tv.setRotation(0);
+        tvDot.setTextSize(100);
     }
 }

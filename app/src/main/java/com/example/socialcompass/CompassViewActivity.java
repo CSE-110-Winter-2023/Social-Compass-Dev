@@ -51,7 +51,7 @@ public class CompassViewActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this).get(FriendViewModel.class);
 
         zoomLevel = ZoomLevel.singleton(this);
-        zoomLevel.setZoomLevelNumber(1);
+        zoomLevel.setZoomLevelNumber(3);
 
         currentLocation = new Location("User Location");
         currentLocation.setLatitude(90.0000);
@@ -112,6 +112,12 @@ public class CompassViewActivity extends AppCompatActivity {
         TextView cur_text_view = Utilities.createCompassLocationTextView(this, publickey, 0, 0, 20f, false);
         ((ConstraintLayout) findViewById(R.id.clock)).addView(cur_text_view);
         ui_controller.setTextView(cur_text_view);
+
+
+        TextView cur_text_viewDot = Utilities.createCompassLocationTextView(this, ".", 0, 0, 20f, false);
+        ((ConstraintLayout) findViewById(R.id.clock)).addView(cur_text_viewDot);
+        ui_controller.setDotTextView(cur_text_viewDot);
+
         locations.createAndAddLocation(publickey, ui_controller);
     }
 
