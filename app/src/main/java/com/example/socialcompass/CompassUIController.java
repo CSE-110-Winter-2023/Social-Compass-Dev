@@ -14,7 +14,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 public class CompassUIController implements UIController {
     private float locAngle;
     private float orientAngle;
-    private int distance;
+    private float distance;
     private TextView tv;
 
     /**
@@ -27,7 +27,7 @@ public class CompassUIController implements UIController {
      * @param distance The distance to the target location
      * @param tv The TextView used to display the compass needle
      */
-    public CompassUIController(float locAngle, float orientAngle, int distance, TextView tv){
+    public CompassUIController(float locAngle, float orientAngle, float distance, TextView tv){
         this.locAngle = locAngle;
         this.orientAngle = orientAngle;
         this.distance = distance;
@@ -89,11 +89,11 @@ public class CompassUIController implements UIController {
         return tv;
     }
 
-    public void setDistance(int distance) {
+    public void setDistance(float distance) {
         this.distance = distance;
     }
 
-    public int getDistance() {
+    public float getDistance() {
         return this.distance;
     }
     /**
@@ -106,7 +106,7 @@ public class CompassUIController implements UIController {
         float angle = locAngle + orientAngle;
         ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) tv.getLayoutParams();
         layoutParams1.circleAngle = angle;
-        layoutParams1.circleRadius = distance;
+        layoutParams1.circleRadius = ZoomLevel.singleton(null).calculateDistance(this.distance);
         tv.setLayoutParams(layoutParams1);
         tv.setRotation(0);
     }

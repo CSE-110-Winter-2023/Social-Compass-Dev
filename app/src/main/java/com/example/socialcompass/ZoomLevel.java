@@ -1,168 +1,87 @@
 package com.example.socialcompass;
 
-import static com.example.socialcompass.ZoomManager.getOwnLocation;
-
 import android.app.Activity;
-import android.location.Location;
 import android.view.View;
 
-public interface ZoomLevel {
-    public void setUI(Activity activity);
-    public void setDistances();
-}
+import java.math.BigDecimal;
+import java.math.MathContext;
 
-class Zoom1 implements ZoomLevel {
-    public void setUI(Activity activity){
-        var circle33 = activity.findViewById(R.id.circle_33);
-        var circle66 = activity.findViewById(R.id.circle_66);
-        var circle25 = activity.findViewById(R.id.circle_25);
-        var circle50 = activity.findViewById(R.id.circle_50);
-        var circle75 = activity.findViewById(R.id.circle_75);
-        var circle100 = activity.findViewById(R.id.circle_100);
-        circle33.setVisibility(View.INVISIBLE);
-        circle66.setVisibility(View.INVISIBLE);
-        circle25.setVisibility(View.INVISIBLE);
-        circle50.setVisibility(View.INVISIBLE);
-        circle75.setVisibility(View.INVISIBLE);
-        circle100.setVisibility(View.VISIBLE);
+public class ZoomLevel {
+
+    private static ZoomLevel instance;
+    private Activity activity;
+    public static ZoomLevel singleton(Activity activity) {
+        if (instance == null){
+            instance = new ZoomLevel(activity);
+        }
+        return instance;
     }
 
-    public void setDistances(){
-        Location ownLocation = getOwnLocation();
+    private double calc(double x) {
 
-        for(CompassLocationObject co : CompassLocationContainer.singleton()){
+        return (210.316 + (-0.8349716 - 210.316)/(1 + Math.pow((x/92411.42),0.2862929)));
 
-            float distance = co.getLocation().distanceTo(ownLocation);
-            CompassUIController controller = co.getController();
+    }
 
-            if(distance <= 1609.34) {
-                controller.setDistance(240); //55 percent
-            }
-            else {
-                controller.setDistance(560); // on radius
-                //TODO turn into a dot
-            }
+    int zoomLevelNumber;
+    final double[] increaseScale = new double[]{1, 4/3, 1.5, 2};
+    private float renderScale = 1;
+
+    public ZoomLevel(Activity activity) {
+        this.zoomLevelNumber = 0;
+        this.activity = activity;
+    }
+
+    public int calculateDistance(float trueDistance){
+        var result = (int) (calc(trueDistance)*renderScale);
+        System.out.println(trueDistance + " >>>>>>>>>>>>>>> " + result + " : " + renderScale);
+        return (int) (result * this.activity.getResources().getDisplayMetrics().scaledDensity);
+    }
+
+    public int getZoomLevelNumber() {
+        return zoomLevelNumber;
+    }
+
+    public void setZoomLevelNumber(int zoomLevelNumber) {
+        this.zoomLevelNumber = 0;
+        this.renderScale = 1;
+        for (int i = 0; i < zoomLevelNumber; i++){
+            incrementZoomLevel();
         }
     }
-}
 
-class Zoom2 implements ZoomLevel {
-    public void setUI(Activity activity){
-        var circle33 = activity.findViewById(R.id.circle_33);
-        var circle66 = activity.findViewById(R.id.circle_66);
-        var circle25 = activity.findViewById(R.id.circle_25);
-        var circle50 = activity.findViewById(R.id.circle_50);
-        var circle75 = activity.findViewById(R.id.circle_75);
-        var circle100 = activity.findViewById(R.id.circle_100);
-        circle33.setVisibility(View.INVISIBLE);
-        circle66.setVisibility(View.INVISIBLE);
-        circle25.setVisibility(View.INVISIBLE);
-        circle50.setVisibility(View.VISIBLE);
-        circle75.setVisibility(View.INVISIBLE);
-        circle100.setVisibility(View.VISIBLE);
-    }
-    public void setDistances(){
-        Location ownLocation = getOwnLocation();
+    public void incrementZoomLevel(){
+        renderScale *= increaseScale[zoomLevelNumber];
+        zoomLevelNumber++;
 
-        for(CompassLocationObject co : CompassLocationContainer.singleton()){
 
-            float distance = co.getLocation().distanceTo(ownLocation);
-            CompassUIController controller = co.getController();
+        var circle25 = this.activity.findViewById(R.id.circle_25);
+        var circle50 = this.activity.findViewById(R.id.circle_50);
+        var circle75 = this.activity.findViewById(R.id.circle_75);
+        var circle100 = this.activity.findViewById(R.id.circle_100);
 
-            if(distance <= 1609.34) {
-                controller.setDistance(33); //33 percent
-            }
-            else if(distance <= 16093.4) {
-                controller.setDistance(66); //66 percent
-            }
-            else {
-                controller.setDistance(560); // on radius
-                //TODO turn into a dot
-            }
+        var con = new View[]{circle25, circle50, circle75, circle100};
+        for (var v : con) {
+            v.setScaleX((float) (v.getScaleX() * increaseScale[zoomLevelNumber-1]));
+            v.setScaleY((float) (v.getScaleY() * increaseScale[zoomLevelNumber-1]));
         }
     }
-}
 
-class Zoom3 implements ZoomLevel {
-    public void setUI(Activity activity){
-        var circle33 = activity.findViewById(R.id.circle_33);
-        var circle66 = activity.findViewById(R.id.circle_66);
-        var circle25 = activity.findViewById(R.id.circle_25);
-        var circle50 = activity.findViewById(R.id.circle_50);
-        var circle75 = activity.findViewById(R.id.circle_75);
-        var circle100 = activity.findViewById(R.id.circle_100);
-        circle33.setVisibility(View.VISIBLE);
-        circle66.setVisibility(View.VISIBLE);
-        circle25.setVisibility(View.INVISIBLE);
-        circle50.setVisibility(View.INVISIBLE);
-        circle75.setVisibility(View.INVISIBLE);
-        circle100.setVisibility(View.VISIBLE);
-    }
-    public void setDistances(){
-        Location ownLocation = getOwnLocation();
+    public void decreaseZoomLevel(){
+        zoomLevelNumber--;
+        renderScale /= increaseScale[zoomLevelNumber];
 
-        for(CompassLocationObject co : CompassLocationContainer.singleton()){
+        var circle25 = this.activity.findViewById(R.id.circle_25);
+        var circle50 = this.activity.findViewById(R.id.circle_50);
+        var circle75 = this.activity.findViewById(R.id.circle_75);
+        var circle100 = this.activity.findViewById(R.id.circle_100);
 
-            float distance = co.getLocation().distanceTo(ownLocation);
-            CompassUIController controller = co.getController();
-
-            if(distance <= 1609.34) {
-                controller.setDistance(25); //25 percent
-            }
-            else if(distance <= 16093.4) {
-                controller.setDistance(240); //50 percent
-            }
-            else if(distance <= 804672) {
-                controller.setDistance(75); //75 percent
-            }
-            else {
-                controller.setDistance(560); // on radius
-                //TODO turn into a dot
-            }
+        var con = new View[]{circle25, circle50, circle75, circle100};
+        for (var v : con) {
+            v.setScaleX((float) (v.getScaleX() / increaseScale[zoomLevelNumber]));
+            v.setScaleY((float) (v.getScaleY() / increaseScale[zoomLevelNumber]));
         }
     }
-}
 
-class Zoom4 implements ZoomLevel {
-    public void setUI(Activity activity){
-        var circle33 = activity.findViewById(R.id.circle_33);
-        var circle66 = activity.findViewById(R.id.circle_66);
-        var circle25 = activity.findViewById(R.id.circle_25);
-        var circle50 = activity.findViewById(R.id.circle_50);
-        var circle75 = activity.findViewById(R.id.circle_75);
-        var circle100 = activity.findViewById(R.id.circle_100);
-        circle33.setVisibility(View.INVISIBLE);
-        circle66.setVisibility(View.INVISIBLE);
-        circle25.setVisibility(View.VISIBLE);
-        circle50.setVisibility(View.VISIBLE);
-        circle75.setVisibility(View.VISIBLE);
-        circle100.setVisibility(View.VISIBLE);
-    }
 
-    public void setDistances(){
-        Location ownLocation = getOwnLocation();
-
-        for(CompassLocationObject co : CompassLocationContainer.singleton()){
-
-            float distance = co.getLocation().distanceTo(ownLocation);
-            CompassUIController controller = co.getController();
-
-            if(distance <= 1609.34) {
-                controller.setDistance(20); //20 percent
-            }
-            else if(distance <= 16093.4) {
-                controller.setDistance(40); //40 percent
-            }
-            else if(distance <= 804672) {
-                controller.setDistance(60); //60 percent
-            }
-            else if(distance <= 6.378e+6) {
-                controller.setDistance(80); //80 percent
-            }
-            else {
-                controller.setDistance(560); // on radius
-                //TODO turn into a dot
-            }
-        }
-    }
 }

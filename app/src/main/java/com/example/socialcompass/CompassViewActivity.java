@@ -34,9 +34,8 @@ public class CompassViewActivity extends AppCompatActivity {
     final String userPrivateKey = "team4PrivateKey";
     final String userPublicKey = "team4PublicKey";
     private FriendViewModel viewModel;
-    private ZoomManager zoomManager;
     String ourDisplayName = LocationAPI.provide().getFromRemoteAPIAsync(userPublicKey).label;
-
+    private ZoomLevel zoomLevel;
 
 //    @Override
 //    protected void onPause(){
@@ -49,9 +48,10 @@ public class CompassViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compass_view);
-        zoomManager = new ZoomManager();
-        zoomManager.setZoomLevelNumber(2);
         viewModel = new ViewModelProvider(this).get(FriendViewModel.class);
+
+        zoomLevel = ZoomLevel.singleton(this);
+        zoomLevel.setZoomLevelNumber(1);
 
         currentLocation = new Location("User Location");
         currentLocation.setLatitude(90.0000);
@@ -85,9 +85,7 @@ public class CompassViewActivity extends AppCompatActivity {
                 float angle = currentLocation.bearingTo(o_loc.getLocation());
 
                 var trueDistance = currentLocation.distanceTo(o_loc.getLocation());
-                var relativeDistance = (int) ((trueDistance/6378153) * (circleRadiusLayerOne/3));
-
-                o_loc.getController().setDistance(relativeDistance);
+                o_loc.getController().setDistance(trueDistance);
                 o_loc.getController().setLocAngle(angle);
                 o_loc.getController().updateUI();
             }
@@ -172,13 +170,6 @@ public class CompassViewActivity extends AppCompatActivity {
         if (requestCode == PreferencesActivity.REQUEST_CODE && resultCode == RESULT_OK) {
             // Called when finished from PreferenceActivity and a name was added
 
-//            String fetchedDisplayName = data.getStringExtra("newDisplayName");
-//            setDisplayName(fetchedDisplayName);
-//            if(!fetchedDisplayName.equals("error")){
-//                setDisplayName("joe");
-//            }
-//            Log.i("Debuug", "YOOOOOOOOO" + fetchedDisplayName);
-
             locations.clear();
 
             for (userID uuid : viewModel.getFriendsSync()) {
@@ -188,16 +179,16 @@ public class CompassViewActivity extends AppCompatActivity {
         }
     }
     public void onPlusClicked(View view) {
-        if (zoomManager.getZoomLevelNumber() == 4)
+        if (zoomLevel.getZoomLevelNumber() == 4)
         {
             return;
         }
-        if(zoomManager.getZoomLevelNumber() == 1) {
+        if(zoomLevel.getZoomLevelNumber() == 1) {
             ImageView minus = findViewById(R.id.minus_btn);
             minus.setColorFilter(null);
             minus.setImageAlpha(255);
         }
-        if (zoomManager.getZoomLevelNumber() == 3)
+        if (zoomLevel.getZoomLevelNumber() == 3)
         {
             // https://stackoverflow.com/questions/28308325/androidset-gray-scale-filter-to-imageview
             ColorMatrix matrix = new ColorMatrix();
@@ -209,20 +200,20 @@ public class CompassViewActivity extends AppCompatActivity {
             plus.setImageAlpha(128);
 
         }
-        zoomManager.setZoomLevelNumber(zoomManager.getZoomLevelNumber()+1);
+        zoomLevel.incrementZoomLevel();
     }
 
     public void onMinusClicked(View view) {
-        if (zoomManager.getZoomLevelNumber() == 1)
+        if (zoomLevel.getZoomLevelNumber() == 1)
         {
             return;
         }
-        if(zoomManager.getZoomLevelNumber() == 4) {
+        if(zoomLevel.getZoomLevelNumber() == 4) {
             ImageView plus = findViewById(R.id.plus_btn);
             plus.setColorFilter(null);
             plus.setImageAlpha(255);
         }
-        if (zoomManager.getZoomLevelNumber() == 2)
+        if (zoomLevel.getZoomLevelNumber() == 2)
         {
             // https://stackoverflow.com/questions/28308325/androidset-gray-scale-filter-to-imageview
             ColorMatrix matrix = new ColorMatrix();
@@ -232,7 +223,7 @@ public class CompassViewActivity extends AppCompatActivity {
             minus.setColorFilter(cf);
             minus.setImageAlpha(128);
         }
-        zoomManager.setZoomLevelNumber(zoomManager.getZoomLevelNumber()-1);
+        zoomLevel.decreaseZoomLevel();
     }
 
 }
