@@ -51,7 +51,7 @@ public class CompassViewActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this).get(FriendViewModel.class);
 
         zoomLevel = ZoomLevel.singleton(this);
-        zoomLevel.setZoomLevelNumber(3);
+        zoomLevel.setZoomLevelNumber(0);
 
         currentLocation = new Location("User Location");
         currentLocation.setLatitude(90.0000);
@@ -185,16 +185,16 @@ public class CompassViewActivity extends AppCompatActivity {
         }
     }
     public void onPlusClicked(View view) {
-        if (zoomLevel.getZoomLevelNumber() == 4)
+        if (zoomLevel.getZoomLevelNumber() == 3)
         {
             return;
         }
-        if(zoomLevel.getZoomLevelNumber() == 1) {
+        if(zoomLevel.getZoomLevelNumber() == 0) {
             ImageView minus = findViewById(R.id.minus_btn);
             minus.setColorFilter(null);
             minus.setImageAlpha(255);
         }
-        if (zoomLevel.getZoomLevelNumber() == 3)
+        if (zoomLevel.getZoomLevelNumber() == 2)
         {
             // https://stackoverflow.com/questions/28308325/androidset-gray-scale-filter-to-imageview
             ColorMatrix matrix = new ColorMatrix();
@@ -210,16 +210,16 @@ public class CompassViewActivity extends AppCompatActivity {
     }
 
     public void onMinusClicked(View view) {
-        if (zoomLevel.getZoomLevelNumber() == 1)
+        if (zoomLevel.getZoomLevelNumber() == 0)
         {
             return;
         }
-        if(zoomLevel.getZoomLevelNumber() == 4) {
+        if(zoomLevel.getZoomLevelNumber() == 3) {
             ImageView plus = findViewById(R.id.plus_btn);
             plus.setColorFilter(null);
             plus.setImageAlpha(255);
         }
-        if (zoomLevel.getZoomLevelNumber() == 2)
+        if (zoomLevel.getZoomLevelNumber() == 1)
         {
             // https://stackoverflow.com/questions/28308325/androidset-gray-scale-filter-to-imageview
             ColorMatrix matrix = new ColorMatrix();

@@ -8,6 +8,7 @@
 
 package com.example.socialcompass;
 
+import android.view.View;
 import android.widget.TextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -110,14 +111,29 @@ public class CompassUIController implements UIController {
     @Override
     public void updateUI(){
         float angle = locAngle + orientAngle;
+
         ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) tv.getLayoutParams();
         ConstraintLayout.LayoutParams layoutParamsDot = (ConstraintLayout.LayoutParams) tvDot.getLayoutParams();
+
         layoutParamsDot.circleAngle = angle;
-        layoutParamsDot.circleRadius = 540;
+        layoutParamsDot.circleRadius = 390;
+
         layoutParams1.circleAngle = angle;
         layoutParams1.circleRadius = ZoomLevel.singleton(null).calculateDistance(this.distance);
+
+        if (ZoomLevel.singleton(null).distanceInView(this.distance)) {
+            System.out.println("VISIBLE");
+            tv.setVisibility(View.VISIBLE);
+            tvDot.setVisibility(View.INVISIBLE);
+        } else {
+            System.out.println("INVISIBLE");
+            tv.setVisibility(View.INVISIBLE);
+            tvDot.setVisibility(View.VISIBLE);
+        }
+
         tvDot.setLayoutParams(layoutParamsDot);
         tv.setLayoutParams(layoutParams1);
+
         tv.setRotation(0);
         tvDot.setTextSize(100);
     }
