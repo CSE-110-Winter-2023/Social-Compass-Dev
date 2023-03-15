@@ -33,6 +33,9 @@ public class ZoomLevel {
     public ZoomLevel(Activity activity) {
         this.zoomLevelNumber = 0;
         this.activity = activity;
+        this.updateUI();
+        this.incrementZoomLevel();
+        this.incrementZoomLevel();
     }
 
     public int calculateDistance(float trueDistance){

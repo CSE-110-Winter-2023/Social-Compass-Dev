@@ -12,6 +12,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -127,6 +128,34 @@ public class Utilities {
         textView.setLayoutParams(layoutParams);
 
         return textView;
+    }
+
+    /**
+     * Creates and returns a dot imageView that is used to display a compass location.
+     *
+     * @param context The context of the activity in which the text view will be created.
+     * @param angle The angle at which the text view will be rotated.
+     * @param radius The radius of the circle in which the text view will be placed.
+     * @return The text view that was created.
+     */
+    public static ImageView createCompassLocationImage(Context context, float angle, int radius, ImageView imgView) {
+
+        imgView.setId(View.generateViewId());
+
+        imgView.setLayoutParams(new ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.WRAP_CONTENT,
+                ConstraintLayout.LayoutParams.WRAP_CONTENT));
+
+        imgView.setRotation(angle);
+
+        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) imgView.getLayoutParams();
+        layoutParams.circleConstraint = R.id.clock;
+        layoutParams.circleAngle = angle;
+        layoutParams.circleRadius = radius;
+
+        imgView.setLayoutParams(layoutParams);
+
+        return imgView;
     }
 }
 

@@ -9,6 +9,7 @@
 package com.example.socialcompass;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -17,7 +18,7 @@ public class CompassUIController implements UIController {
     private float orientAngle;
     private float distance;
     private TextView tv;
-    private TextView tvDot;
+    private View imageViewDot;
 
     /**
      * Constructor for the CompassUIController class. It initializes the instance variables for the
@@ -29,12 +30,12 @@ public class CompassUIController implements UIController {
      * @param distance The distance to the target location
      * @param tv The TextView used to display the compass needle
      */
-    public CompassUIController(float locAngle, float orientAngle, float distance, TextView tv){
+    public CompassUIController(float locAngle, float orientAngle, float distance, TextView tv, View imageViewDot){
         this.locAngle = locAngle;
         this.orientAngle = orientAngle;
         this.distance = distance;
         this.tv = tv;
-        this.tvDot = tv;
+        this.imageViewDot = imageViewDot;
     }
 
     /**
@@ -83,8 +84,8 @@ public class CompassUIController implements UIController {
         this.tv = tv;
     }
 
-    public void setDotTextView(TextView tvDot) {
-        this.tvDot = tvDot;
+    public void setDotTextView(View imageViewDot) {
+        this.imageViewDot = imageViewDot;
     }
 
     /**
@@ -113,10 +114,10 @@ public class CompassUIController implements UIController {
         float angle = locAngle + orientAngle;
 
         ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) tv.getLayoutParams();
-        ConstraintLayout.LayoutParams layoutParamsDot = (ConstraintLayout.LayoutParams) tvDot.getLayoutParams();
+        ConstraintLayout.LayoutParams layoutParamsDot = (ConstraintLayout.LayoutParams) imageViewDot.getLayoutParams();
 
         layoutParamsDot.circleAngle = angle;
-        layoutParamsDot.circleRadius = 390;
+        layoutParamsDot.circleRadius = 605;
 
         layoutParams1.circleAngle = angle;
         layoutParams1.circleRadius = ZoomLevel.singleton(null).calculateDistance(this.distance);
@@ -124,17 +125,16 @@ public class CompassUIController implements UIController {
         if (ZoomLevel.singleton(null).distanceInView(this.distance)) {
             System.out.println("VISIBLE");
             tv.setVisibility(View.VISIBLE);
-            tvDot.setVisibility(View.INVISIBLE);
+            imageViewDot.setVisibility(View.INVISIBLE);
         } else {
             System.out.println("INVISIBLE");
             tv.setVisibility(View.INVISIBLE);
-            tvDot.setVisibility(View.VISIBLE);
+            imageViewDot.setVisibility(View.VISIBLE);
         }
 
-        tvDot.setLayoutParams(layoutParamsDot);
+        imageViewDot.setLayoutParams(layoutParamsDot);
         tv.setLayoutParams(layoutParams1);
 
         tv.setRotation(0);
-        tvDot.setTextSize(100);
     }
 }

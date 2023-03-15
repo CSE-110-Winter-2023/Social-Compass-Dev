@@ -29,17 +29,17 @@ public class CompassLocationContainerTest {
         key2 = new MockRemoteKey("Location 2", new RemoteLocation("Location 2", 50, 50));
 
 
-        CompassUIController controller1 = new CompassUIController(0, 0, 0, null);
+        CompassUIController controller1 = new CompassUIController(0, 0, 0, null, null);
         containerWithTwoElements.addLocation(new CompassLocationObject(key1, controller1));
 
-        CompassUIController controller2 = new CompassUIController(0, 0, 0, null);
+        CompassUIController controller2 = new CompassUIController(0, 0, 0, null, null);
         containerWithTwoElements.addLocation(new CompassLocationObject( key2, controller2));
 
     }
 
     @Test
     public void testAddLocation() {
-        CompassUIController controller = new CompassUIController(0, 0, 0, null);
+        CompassUIController controller = new CompassUIController(0, 0, 0, null, null);
         CompassLocationObject location = new CompassLocationObject(key1, controller);
 
         emptyContainer.addLocation(location);
@@ -56,11 +56,11 @@ public class CompassLocationContainerTest {
 
     @Test
     public void testGetLocationAt() {
-        CompassUIController controller1 = new CompassUIController(0, 0, 0, null);
+        CompassUIController controller1 = new CompassUIController(0, 0, 0, null, null);
         CompassLocationObject location1 = new CompassLocationObject(key1, controller1);
         containerWithTwoElements.addLocation(location1);
 
-        CompassUIController controller2 = new CompassUIController(0, 0, 0, null);
+        CompassUIController controller2 = new CompassUIController(0, 0, 0, null, null);
         CompassLocationObject location2 = new CompassLocationObject(key2, controller2);
         containerWithTwoElements.addLocation(location2);
 
