@@ -8,6 +8,7 @@
 
 package com.example.socialcompass;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -88,6 +89,10 @@ public class CompassUIController implements UIController {
         this.imageViewDot = imageViewDot;
     }
 
+    public View getDotTextView() {
+        return imageViewDot;
+    }
+
     /**
      * Returns the current TextView used to display the compass needle.
      *
@@ -136,5 +141,7 @@ public class CompassUIController implements UIController {
         tv.setLayoutParams(layoutParams1);
 
         tv.setRotation(0);
+
+
     }
 }

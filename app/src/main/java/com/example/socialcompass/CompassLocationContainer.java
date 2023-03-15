@@ -10,6 +10,8 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 import android.app.Activity;
 import android.location.Location;
+import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.AnyThread;
@@ -127,7 +129,10 @@ public class CompassLocationContainer implements Iterable<CompassLocationObject>
 
     public void clear() {
         for (CompassLocationObject loc : locationList) {
-            loc.destroy();
+            //TODO actually delete them instead of setting as invisible
+            loc.getController().getTextView().setVisibility(View.INVISIBLE);
+            loc.getController().getDotTextView().setVisibility(View.INVISIBLE);
+            loc.destroy();;
         }
 
         locationList = new ArrayList<>();
