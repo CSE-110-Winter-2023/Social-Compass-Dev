@@ -8,6 +8,7 @@
 
 package com.example.socialcompass;
 
+import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -139,7 +140,7 @@ public class CompassUIController implements UIController {
 
         imageViewDot.setLayoutParams(layoutParamsDot);
         tv.setLayoutParams(layoutParams1);
-
+        tv.setTextColor(Color.BLACK);
         tv.setRotation(0);
 
 
