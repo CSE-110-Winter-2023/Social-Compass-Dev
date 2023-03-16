@@ -9,6 +9,7 @@ package com.example.socialcompass;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import android.app.Activity;
+import android.graphics.Rect;
 import android.location.Location;
 import android.util.Log;
 import android.view.View;
@@ -26,7 +27,6 @@ import java.util.concurrent.Executors;
 public class CompassLocationContainer implements Iterable<CompassLocationObject> {
     private static CompassLocationContainer instance;
     private List<CompassLocationObject> locationList;
-
 
     public static CompassLocationContainer singleton() {
         if (instance == null){
@@ -147,5 +147,49 @@ public class CompassLocationContainer implements Iterable<CompassLocationObject>
         }
 
         locationList = new ArrayList<>();
+    }
+
+    public void updateAll(){
+
+        CompassLocationContainer compassLocationContainer = CompassLocationContainer.singleton();
+
+        //create an array to of size container that will store -1 if nudge in
+        // 1 to nudge out and 0 if no collision for each of friend.
+        int[] collision = new int[compassLocationContainer.getAllLocations().size()];
+        for(int i = 0; i < collision.length; i++){
+            collision[i] = 0;
+        }
+
+        for (int i = 0; i < compassLocationContainer.getAllLocations().size(); i++) {
+            Rect rectOut = new Rect();
+            CompassLocationObject compassLocationObjectOUT = compassLocationContainer.getAllLocations().get(i);
+            compassLocationObjectOUT.getController().getTextView().getGlobalVisibleRect(rectOut);
+
+            for (int j = i+1; j < compassLocationContainer.getAllLocations().size(); j++) {
+
+                Rect rectIn = new Rect();
+                CompassLocationObject compassLocationObjectIN = compassLocationContainer.getAllLocations().get(j);
+                compassLocationObjectIN.getController().getTextView().getGlobalVisibleRect(rectIn);
+
+
+                if(rectIn.intersect(rectOut)){
+                    Log.i("collision", "COLLIDING");
+                    collision[i] = 1;
+                    collision[j] = -1;
+                }
+            }
+        }
+
+        for(int i = 0; i < collision.length; i++){
+            if(collision[i] == -1){
+                compassLocationContainer.getAllLocations().get(i).getController().updateUI(-30);
+            }
+            else if(collision[i] == 1){
+                compassLocationContainer.getAllLocations().get(i).getController().updateUI(40);
+            }
+            else {
+                compassLocationContainer.getAllLocations().get(i).getController().updateUI(0);
+            }
+        }
     }
 }

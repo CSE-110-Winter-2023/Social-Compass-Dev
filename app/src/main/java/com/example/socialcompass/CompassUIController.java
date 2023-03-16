@@ -19,6 +19,7 @@ public class CompassUIController implements UIController {
     private float locAngle;
     private float orientAngle;
     private float distance;
+    private float UIdistance;
     private TextView tv;
     private View imageViewDot;
 
@@ -116,17 +117,21 @@ public class CompassUIController implements UIController {
      * used to display the compass needle accordingly.
      */
     @Override
-    public void updateUI(){
+    public void updateUI(int offset){
         float angle = locAngle + orientAngle;
 
         ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) tv.getLayoutParams();
         ConstraintLayout.LayoutParams layoutParamsDot = (ConstraintLayout.LayoutParams) imageViewDot.getLayoutParams();
+        Log.i("collision", "REG");
 
         layoutParamsDot.circleAngle = angle;
         layoutParamsDot.circleRadius = 605;
 
+        this.UIdistance = ZoomLevel.singleton(null).calculateDistance(this.distance);
+
         layoutParams1.circleAngle = angle;
-        layoutParams1.circleRadius = ZoomLevel.singleton(null).calculateDistance(this.distance);
+        layoutParams1.circleRadius = (int) UIdistance + offset;
+
 
         if (ZoomLevel.singleton(null).distanceInView(this.distance)) {
             System.out.println("VISIBLE");
@@ -141,8 +146,6 @@ public class CompassUIController implements UIController {
         imageViewDot.setLayoutParams(layoutParamsDot);
         tv.setLayoutParams(layoutParams1);
         tv.setTextColor(Color.BLACK);
-        tv.setRotation(0);
-
-
+        tv.setRotation(angle);
     }
 }

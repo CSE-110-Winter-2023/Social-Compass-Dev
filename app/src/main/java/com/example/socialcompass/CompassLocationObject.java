@@ -90,6 +90,8 @@ public class CompassLocationObject {
     public void syncName() {
         if (this.controller.getTextView() != null) {
             controller.getTextView().setText(this.locationName);
+            controller.getTextView().setTextSize(15);
+
         }
     }
 

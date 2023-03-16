@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import android.location.Location;
 import android.os.Bundle;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -36,6 +37,7 @@ public class CompassViewActivity extends AppCompatActivity {
     private FriendViewModel viewModel;
     String ourDisplayName = LocationAPI.provide().getFromRemoteAPIAsync(userPublicKey).label;
     private ZoomLevel zoomLevel;
+
 
 //    @Override
 //    protected void onPause(){
@@ -76,19 +78,19 @@ public class CompassViewActivity extends AppCompatActivity {
         orientationService = OrientationService.singleton(this);
 
         locationService.getLocation().observe(this, loc -> {
+
             currentLocation.setLatitude(loc.first);
             currentLocation.setLongitude(loc.second);
-
             LocationAPI.provide().upsertToRemoteAPIAsync(userPrivateKey, userPublicKey, currentLocation, this.ourDisplayName);
 
             for (CompassLocationObject o_loc : locations){
                 float angle = currentLocation.bearingTo(o_loc.getLocation());
-
                 var trueDistance = currentLocation.distanceTo(o_loc.getLocation());
                 o_loc.getController().setDistance(trueDistance);
                 o_loc.getController().setLocAngle(angle);
-                o_loc.getController().updateUI();
+//                o_loc.getController().updateUI();
             }
+            CompassLocationContainer.singleton().updateAll();
         });
 
         orientationService.getOrientation().observe(this, orientation -> {
@@ -97,8 +99,9 @@ public class CompassViewActivity extends AppCompatActivity {
 
             for (CompassLocationObject o_loc : locations) {
                 o_loc.getController().setOrient(angle);
-                o_loc.getController().updateUI();
+//                o_loc.getController().updateUI();
             }
+            CompassLocationContainer.singleton().updateAll();
         });
         orientationService.registerSensorListener();
     }
