@@ -115,7 +115,8 @@ public class CompassViewActivity extends AppCompatActivity {
         orientationService.registerSensorListener();
 
         mMinuteHandler = new Handler(Looper.getMainLooper());
-        mMinuteHandler.postDelayed(mGpsCheckRunnable, 1000); // Check every second
+        mMinuteHandler.postDelayed(mGpsCheckRunnable, 5000); //wait 5 seconds before starting to check
+//        mLastGpsTime = System.currentTimeMillis();
 
     }
 
