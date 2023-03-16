@@ -1,17 +1,22 @@
 package com.example.socialcompass;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.location.Location;
 import android.os.Bundle;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,7 +24,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
-
+import android.location.LocationManager;
 import java.util.concurrent.Executors;
 
 public class CompassViewActivity extends AppCompatActivity {
@@ -32,7 +37,15 @@ public class CompassViewActivity extends AppCompatActivity {
     final String userPublicKey = "team4PublicKey";
     private FriendViewModel viewModel;
     String ourDisplayName = LocationAPI.provide().getFromRemoteAPIAsync(userPublicKey).label;
+    private Handler mMinuteHandler;
+    private Handler mSecondHandler;
+    private boolean isConnected = false;
+    private long timeDisconnected = 0;
 
+    private long mLastGpsTime;
+
+    //private ImageView status = findViewById(R.id.status);
+    //private TextView timer = findViewById(R.id.timer);
 
 //    @Override
 //    protected void onPause(){
@@ -100,7 +113,76 @@ public class CompassViewActivity extends AppCompatActivity {
             }
         });
         orientationService.registerSensorListener();
+
+
+        mMinuteHandler = new Handler(Looper.getMainLooper());
+        mMinuteHandler.postDelayed(mGpsCheckRunnable, 1000); // Check every minute
+
+        // Initialize the second handler to check GPS connection every second
+//        mSecondHandler = new Handler(getMainLooper());
+//        mSecondHandler.postDelayed(mSecondGpsCheckRunnable, 1000);
+
     }
+
+
+    public void onLocationChanged(Location location) {
+        // Record the time when we got the last GPS update
+        mLastGpsTime = System.currentTimeMillis();
+    }
+
+    private final Runnable mGpsCheckRunnable = new Runnable() {
+        @Override
+        public void run() {
+            // Get the LocationManager object
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            TextView timer = findViewById(R.id.timer);
+            ImageView status = findViewById(R.id.status);
+            // Check if GPS provider is enabled
+            boolean connected = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+            if(connected == false) {
+                status.getDrawable().setColorFilter(0xffff0000, PorterDuff.Mode.MULTIPLY );
+                long timeSinceLastGps = System.currentTimeMillis() - mLastGpsTime;
+                // Update the UI with the GPS status and the time since the last update
+                timer.setText(timeSinceLastGps + "ms");
+            }else{
+                status.getDrawable().clearColorFilter();
+                timer.setText("");
+            }
+
+
+
+            // Schedule the next GPS check in one minute
+            mMinuteHandler.postDelayed(this, 1000);
+        }
+    };
+
+//    private final Runnable mSecondGpsCheckRunnable = new Runnable() {
+//        @Override
+//        public void run() {
+//            // Get the LocationManager object
+//            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+//            ImageView status = findViewById(R.id.status);
+//            // Check if GPS provider is enabled
+//            boolean connected = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+//
+//            // Update the UI with the GPS status
+//            if(connected == true) {
+//                status.getDrawable().setColorFilter(0xffff0000, PorterDuff.Mode.MULTIPLY );
+//            }else {
+//                status.clearColorFilter();
+//            }
+//
+//
+//            // Schedule the next GPS check in one second
+//            mSecondHandler.postDelayed(this, 1000);
+//        }
+//    };
+
+
+
+
+
 
     public void onBackClicked(View view){
         finish();
@@ -148,6 +230,7 @@ public class CompassViewActivity extends AppCompatActivity {
         //starts intent to preferences view activity
         Intent intent = new Intent(this, PreferencesActivity.class);
         startActivityForResult(intent, PreferencesActivity.REQUEST_CODE);
+
     }
 
 
@@ -184,4 +267,6 @@ public class CompassViewActivity extends AppCompatActivity {
             }
         }
     }
+
+
 }

@@ -113,4 +113,6 @@ public class LocationService implements LocationListener {
         */
         mockDataSource.observeForever(loc -> this.locationValue.setValue(loc));
     }
+
+
 }
