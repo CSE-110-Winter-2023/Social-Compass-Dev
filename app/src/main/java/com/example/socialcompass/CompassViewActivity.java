@@ -1,19 +1,15 @@
 package com.example.socialcompass;
 
+import static com.example.socialcompass.GPSTimer.calculateGPSdelay;
+import static com.example.socialcompass.GPSTimer.color;
+import static com.example.socialcompass.GPSTimer.hasSignal;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
-import android.location.GnssClock;
-import android.location.GnssMeasurement;
-import android.location.GnssMeasurementsEvent;
-import android.location.GnssStatus;
-import android.location.GpsSatellite;
-import android.location.GpsStatus;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -41,9 +37,9 @@ public class CompassViewActivity extends AppCompatActivity {
     private FriendViewModel viewModel;
     String ourDisplayName = LocationAPI.provide().getFromRemoteAPIAsync(userPublicKey).label;
     private Handler mMinuteHandler;
-    private long msMinute = 60000;
-    private long msHour = 3600000;
-    private long mLastGpsTime;
+    public long mLastGpsTime;
+    public long currentTime;
+
 
 //    @Override
 //    protected void onPause(){
@@ -99,7 +95,6 @@ public class CompassViewActivity extends AppCompatActivity {
                 o_loc.getController().setLocAngle(angle);
                 o_loc.getController().updateUI();
             }
-
             mLastGpsTime = System.currentTimeMillis();
         });
 
@@ -117,46 +112,40 @@ public class CompassViewActivity extends AppCompatActivity {
         mMinuteHandler = new Handler(Looper.getMainLooper());
         mMinuteHandler.postDelayed(mGpsCheckRunnable, 5000); //wait 5 seconds before starting to check
 //        mLastGpsTime = System.currentTimeMillis();
-
     }
 
     private final Runnable mGpsCheckRunnable = new Runnable() {
         @Override
         public void run() {
-
             TextView timer = findViewById(R.id.timer);
             ImageView status = findViewById(R.id.status);
 
-            Log.i("GPS", "" + String.valueOf(System.currentTimeMillis()-mLastGpsTime));
+            currentTime = System.currentTimeMillis();
+            Log.i("GPS", "" + String.valueOf(currentTime-mLastGpsTime));
+            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
-            if(System.currentTimeMillis()-mLastGpsTime > 1000) {
+            String toDisplay = calculateGPSdelay(currentTime, mLastGpsTime);
 
-                Log.i("GPS", "Signal Lost");
-
-                long timeSinceLastGps = System.currentTimeMillis() - mLastGpsTime;
-                if (timeSinceLastGps / msHour >= 1)
-                {
-                    status.getDrawable().setColorFilter(0xffff0000, PorterDuff.Mode.MULTIPLY );
-                    // Update the UI with the GPS status and the time since the last update
-                    timer.setText(timeSinceLastGps/msHour + " hr");
-                }
-                else if (timeSinceLastGps / msMinute >= 0.25)
-                {
-                    status.getDrawable().setColorFilter(0xffff0000, PorterDuff.Mode.MULTIPLY );
-                    // Update the UI with the GPS status and the time since the last update
-                    timer.setText(timeSinceLastGps/msMinute + " m");
-                }
-            }
-            else {
-                mLastGpsTime = System.currentTimeMillis();
+            if(color(currentTime, mLastGpsTime)){
                 status.getDrawable().clearColorFilter();
-                timer.setText("");
+            } else {
+                status.getDrawable().setColorFilter(0xffff0000, PorterDuff.Mode.MULTIPLY );
+            }
+
+            if(hasSignal(currentTime, mLastGpsTime)){
+                timer.setText(toDisplay);
+                currentTime = System.currentTimeMillis();
+                mLastGpsTime = System.currentTimeMillis();
+            } else {
+                timer.setText(toDisplay);
             }
 
             // Schedule the next GPS check in one second
             mMinuteHandler.postDelayed(this, 1000);
         }
     };
+
+
 
     public void onBackClicked(View view){
         finish();
@@ -224,13 +213,6 @@ public class CompassViewActivity extends AppCompatActivity {
 
         if (requestCode == PreferencesActivity.REQUEST_CODE && resultCode == RESULT_OK) {
             // Called when finished from PreferenceActivity and a name was added
-
-//            String fetchedDisplayName = data.getStringExtra("newDisplayName");
-//            setDisplayName(fetchedDisplayName);
-//            if(!fetchedDisplayName.equals("error")){
-//                setDisplayName("joe");
-//            }
-//            Log.i("Debuug", "YOOOOOOOOO" + fetchedDisplayName);
 
             locations.clear();
 

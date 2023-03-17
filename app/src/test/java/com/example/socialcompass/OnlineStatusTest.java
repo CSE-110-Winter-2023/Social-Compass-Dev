@@ -1,4 +1,6 @@
 package com.example.socialcompass;
+import static com.example.socialcompass.GPSTimer.calculateGPSdelay;
+import static com.example.socialcompass.GPSTimer.color;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -39,7 +41,6 @@ public class OnlineStatusTest {
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
     @Test
     public void testImageViewFilter() {
-        // Initialize your image view
         long mLastGpsTime = System.currentTimeMillis();
         long currentTime = System.currentTimeMillis();
         ImageView status = new ImageView(ApplicationProvider.getApplicationContext());
@@ -52,18 +53,49 @@ public class OnlineStatusTest {
 
     @Test
     public void testTextViewTextChange() {
-        // Initialize your text view
-
         ActivityScenario<CompassViewActivity> scenario = ActivityScenario.launch(CompassViewActivity.class);
         scenario.moveToState(Lifecycle.State.CREATED);
         scenario.moveToState(Lifecycle.State.STARTED);
         scenario.onActivity(activity -> {
-            long mLastGpsTime = System.currentTimeMillis();
-            long currentTime = System.currentTimeMillis();
             TextView timer = activity.findViewById(R.id.timer);
-            if(mLastGpsTime - currentTime == 0) {
-                assertEquals(timer.getText().toString(), "");
-            }
+
+            activity.mLastGpsTime = 0;
+            activity.currentTime = 0;
+            assertEquals("", timer.getText().toString());
+
+            activity.currentTime = 100000;
+            assertEquals("1 m", calculateGPSdelay(activity.currentTime, activity.mLastGpsTime));
+
+            activity.currentTime = 3000000;
+            assertEquals("50 m", calculateGPSdelay(activity.currentTime, activity.mLastGpsTime));
+
+            activity.currentTime = 10800000;
+            assertEquals("3 hr", calculateGPSdelay(activity.currentTime, activity.mLastGpsTime));
+
+
+        });
+    }
+
+    @Test
+    public void testColorChange() {
+        ActivityScenario<CompassViewActivity> scenario = ActivityScenario.launch(CompassViewActivity.class);
+        scenario.moveToState(Lifecycle.State.CREATED);
+        scenario.moveToState(Lifecycle.State.STARTED);
+        scenario.onActivity(activity -> {
+
+            activity.mLastGpsTime = 0;
+            activity.currentTime = 0;
+            assertEquals(true, color(activity.currentTime, activity.mLastGpsTime));
+
+            activity.currentTime = 100000;
+            assertEquals(false, color(activity.currentTime, activity.mLastGpsTime));
+
+            activity.currentTime = 3000000;
+            assertEquals(false, color(activity.currentTime, activity.mLastGpsTime));
+
+            activity.currentTime = 10800000;
+            assertEquals(false, color(activity.currentTime, activity.mLastGpsTime));
+
 
         });
 
