@@ -35,7 +35,7 @@ public class CompassViewActivity extends AppCompatActivity {
     final String userPrivateKey = "team4PrivateKey";
     final String userPublicKey = "team4PublicKey";
     private FriendViewModel viewModel;
-    String ourDisplayName = LocationAPI.provide().getFromRemoteAPIAsync(userPublicKey).label;
+    String ourDisplayName;
     private ZoomLevel zoomLevel;
 
 
@@ -53,7 +53,8 @@ public class CompassViewActivity extends AppCompatActivity {
         viewModel = new ViewModelProvider(this).get(FriendViewModel.class);
 
         zoomLevel = ZoomLevel.singleton(this);
-//        zoomLevel.setZoomLevelNumber(2);
+
+        ourDisplayName = LocationAPI.provide().getFromRemoteAPIAsync(userPublicKey).label;
 
         currentLocation = new Location("User Location");
         currentLocation.setLatitude(90.0000);
@@ -177,8 +178,6 @@ public class CompassViewActivity extends AppCompatActivity {
             setDisplayName(fetchedDisplayName);
         }
 
-
-
         if (requestCode == PreferencesActivity.REQUEST_CODE && resultCode == RESULT_OK) {
             // Called when finished from PreferenceActivity and a name was added
 
@@ -190,6 +189,9 @@ public class CompassViewActivity extends AppCompatActivity {
             }
         }
     }
+
+
+
     public void onPlusClicked(View view) {
         if (zoomLevel.getZoomLevelNumber() == 3)
         {

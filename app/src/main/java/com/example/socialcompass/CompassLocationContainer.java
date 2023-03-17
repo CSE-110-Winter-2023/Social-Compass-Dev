@@ -182,10 +182,10 @@ public class CompassLocationContainer implements Iterable<CompassLocationObject>
 
         for(int i = 0; i < collision.length; i++){
             if(collision[i] == -1){
-                compassLocationContainer.getAllLocations().get(i).getController().updateUI(-30);
+                compassLocationContainer.getAllLocations().get(i).getController().updateUI(-50);
             }
             else if(collision[i] == 1){
-                compassLocationContainer.getAllLocations().get(i).getController().updateUI(40);
+                compassLocationContainer.getAllLocations().get(i).getController().updateUI(50);
             }
             else {
                 compassLocationContainer.getAllLocations().get(i).getController().updateUI(0);
