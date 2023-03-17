@@ -130,19 +130,6 @@ public class CompassLocationContainer implements Iterable<CompassLocationObject>
 
     public void clear() {
         for (CompassLocationObject loc : locationList) {
-            View namebar = loc.getController().getTextView();
-            ViewGroup parent = (ViewGroup) namebar.getParent();
-            if (parent != null) {
-                parent.removeView(namebar);
-            }
-            View namebarDot = loc.getController().getDotTextView();
-            ViewGroup parentDot = (ViewGroup) namebarDot.getParent();
-            if (parentDot != null) {
-                parentDot.removeView(namebarDot);
-            }
-
-//            loc.getController().getTextView().setVisibility(View.INVISIBLE);
-//            loc.getController().getDotTextView().setVisibility(View.INVISIBLE);
             loc.destroy();
         }
 

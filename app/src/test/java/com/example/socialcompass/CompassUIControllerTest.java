@@ -29,7 +29,7 @@ public class CompassUIControllerTest {
 
     @Before
     public void setup() {
-        compassUIController = new CompassUIController(0, 0, 0, null, null);
+        compassUIController = new CompassUIController(0, 0, 0, null);
     }
 
     @Test

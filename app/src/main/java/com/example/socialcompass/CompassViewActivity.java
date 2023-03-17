@@ -31,20 +31,12 @@ public class CompassViewActivity extends AppCompatActivity {
     private LocationService locationService;
     Location currentLocation;
     private CompassLocationContainer locations;
-    private int circleRadiusLayerOne;
     final String userPrivateKey = "team4PrivateKey";
     final String userPublicKey = "team4PublicKey";
     private FriendViewModel viewModel;
     String ourDisplayName;
     private ZoomLevel zoomLevel;
 
-
-//    @Override
-//    protected void onPause(){
-//        super.onPause();
-//        orientationService.unregisterSensorListeners();
-//        locationService.unregisterLocationListener();
-//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +47,6 @@ public class CompassViewActivity extends AppCompatActivity {
         zoomLevel = ZoomLevel.singleton(this);
 
         var R = LocationAPI.provide().getFromRemoteAPIAsync(userPublicKey);
-        assert R != null;
         if (R != null) {
             ourDisplayName = R.label;
         } else {
@@ -73,7 +64,6 @@ public class CompassViewActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, 200);
         }
 
-        circleRadiusLayerOne = (int) (180 * getResources().getDisplayMetrics().scaledDensity);
 
         for (userID uuid : viewModel.getFriendsSync()) {
             Log.i("[HERE]", uuid.friendID);
@@ -117,18 +107,9 @@ public class CompassViewActivity extends AppCompatActivity {
     }
 
     private void AddLocationToActivity(String publickey) {
-        CompassUIController ui_controller = new CompassUIController(0,0, circleRadiusLayerOne, null, null);
         TextView cur_text_view = Utilities.createCompassLocationTextView(this, publickey, 0, 0, 20f, false);
         ((ConstraintLayout) findViewById(R.id.clock)).addView(cur_text_view);
-        ui_controller.setTextView(cur_text_view);
-
-        ImageView imageView= new ImageView(this);
-        imageView.setImageResource(R.drawable.dot);
-        imageView.setScaleX(0.025f);
-        imageView.setScaleY(0.025f);
-        ImageView dotView = Utilities.createCompassLocationImage(this, 0, 0 , imageView);
-        ((ConstraintLayout) findViewById(R.id.clock)).addView(dotView);
-        ui_controller.setDotTextView(dotView);
+        CompassUIController ui_controller = new CompassUIController(0,0, 1e12f, cur_text_view);
 
         locations.createAndAddLocation(publickey, ui_controller);
     }

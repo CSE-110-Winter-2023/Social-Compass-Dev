@@ -23,7 +23,7 @@ public class CompassLocationObjectTest {
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
     @Before
     public void setup() {
-        controller = new CompassUIController(0, 0, 0, null, null);
+        controller = new CompassUIController(0, 0, 0, null);
         key1 = new MockRemoteKey("Location 1", new RemoteLocation("Location 1", 0, 0));
         compassLocationObject = new CompassLocationObject(key1, controller);
     }
@@ -41,7 +41,7 @@ public class CompassLocationObjectTest {
 
     @Test
     public void testSetController() {
-        CompassUIController newController = new CompassUIController(90, 90, 10, null, null);
+        CompassUIController newController = new CompassUIController(90, 90, 10, null);
         compassLocationObject.setController(newController);
         assertSame(newController, compassLocationObject.getController());
     }
