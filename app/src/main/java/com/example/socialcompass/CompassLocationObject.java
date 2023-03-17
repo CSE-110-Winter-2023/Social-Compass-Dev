@@ -7,6 +7,8 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 import android.location.Location;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -36,13 +38,13 @@ public class CompassLocationObject {
     }
 
     public void updateFromRemote(RemoteLocation remoteLoc) {
-        Log.i("UPDATE",remoteLoc.toJSON());
-        assert remoteLoc != null;
-        this.location.setLatitude(remoteLoc.latitude);
-        this.location.setLongitude(remoteLoc.longitude);
-        this.locationName = remoteLoc.label;
+        if (remoteLoc != null) {
+            this.location.setLatitude(remoteLoc.latitude);
+            this.location.setLongitude(remoteLoc.longitude);
+            this.locationName = remoteLoc.label;
 
-        this.syncName();
+            this.syncName();
+        }
     }
 
     /**
@@ -98,6 +100,16 @@ public class CompassLocationObject {
 
     public void destroy() {
         remote.removeObserver(this::updateFromRemote);
-    }
 
+        View namebar = this.getController().getTextView();
+        ViewGroup parent = (ViewGroup) namebar.getParent();
+        if (parent != null) {
+            parent.removeView(namebar);
+        }
+        View namebarDot = this.getController().getDotTextView();
+        ViewGroup parentDot = (ViewGroup) namebarDot.getParent();
+        if (parentDot != null) {
+            parentDot.removeView(namebarDot);
+        }
+    }
 }

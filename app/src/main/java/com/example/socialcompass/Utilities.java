@@ -138,7 +138,11 @@ public class Utilities {
      * @param radius The radius of the circle in which the text view will be placed.
      * @return The text view that was created.
      */
-    public static ImageView createCompassLocationImage(Context context, float angle, int radius, ImageView imgView) {
+    public static ImageView createCompassLocationImage(Context context, float angle, int radius) {
+        ImageView imgView = new ImageView(context);
+        imgView.setImageResource(R.drawable.dot);
+        imgView.setScaleX(0.025f);
+        imgView.setScaleY(0.025f);
 
         imgView.setId(View.generateViewId());
 
@@ -155,6 +159,7 @@ public class Utilities {
 
         imgView.setLayoutParams(layoutParams);
 
+        ((ConstraintLayout) ((Activity) context).findViewById(R.id.clock)).addView(imgView);
         return imgView;
     }
 }

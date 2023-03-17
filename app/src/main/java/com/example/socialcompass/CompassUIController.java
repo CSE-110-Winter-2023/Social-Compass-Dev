@@ -34,12 +34,13 @@ public class CompassUIController implements UIController {
      * @param distance The distance to the target location
      * @param tv The TextView used to display the compass needle
      */
-    public CompassUIController(float locAngle, float orientAngle, float distance, TextView tv, View imageViewDot){
+    public CompassUIController(float locAngle, float orientAngle, float distance, TextView tv){
         this.locAngle = locAngle;
         this.orientAngle = orientAngle;
         this.distance = distance;
         this.tv = tv;
-        this.imageViewDot = imageViewDot;
+
+        this.imageViewDot = Utilities.createCompassLocationImage((this.tv.getContext()), 0, 0);
     }
 
     /**
@@ -79,23 +80,9 @@ public class CompassUIController implements UIController {
         return this.orientAngle;
     }
 
-    /**
-     * Sets the TextView used to display the compass needle to the given TextView.
-     *
-     * @param tv The new TextView used to display the compass needle
-     */
-    public void setTextView(TextView tv) {
-        this.tv = tv;
-    }
-
-    public void setDotTextView(View imageViewDot) {
-        this.imageViewDot = imageViewDot;
-    }
-
     public View getDotTextView() {
         return imageViewDot;
     }
-
     /**
      * Returns the current TextView used to display the compass needle.
      *
@@ -125,7 +112,7 @@ public class CompassUIController implements UIController {
         ConstraintLayout.LayoutParams layoutParamsDot = (ConstraintLayout.LayoutParams) imageViewDot.getLayoutParams();
 
         layoutParamsDot.circleAngle = angle;
-        layoutParamsDot.circleRadius = (int) (175 * ((Activity) this.tv.getContext()).getResources().getDisplayMetrics().scaledDensity);
+        layoutParamsDot.circleRadius = (int) (175 * (this.tv.getContext()).getResources().getDisplayMetrics().scaledDensity);
 
         this.UIdistance = ZoomLevel.singleton(null).calculateDistance(this.distance);
 
@@ -144,6 +131,6 @@ public class CompassUIController implements UIController {
         imageViewDot.setLayoutParams(layoutParamsDot);
         tv.setLayoutParams(layoutParams1);
         tv.setTextColor(Color.BLACK);
-        tv.setRotation(0);
+        tv.setRotation(angle);
     }
 }
