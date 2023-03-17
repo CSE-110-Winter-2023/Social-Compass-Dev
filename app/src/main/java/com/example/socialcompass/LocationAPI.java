@@ -118,8 +118,6 @@ public class LocationAPI {
             assert response.body() != null;
             Log.i("Debuug", "MY LOCATION " + response.body().string());
 
-
-
         } catch (Exception e) {
             Log.i("Debuug", "PROBLEM");
 

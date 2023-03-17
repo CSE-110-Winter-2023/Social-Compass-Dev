@@ -1,15 +1,23 @@
 package com.example.socialcompass;
 
+import static com.example.socialcompass.GPSTimer.calculateGPSdelay;
+import static com.example.socialcompass.GPSTimer.color;
+import static com.example.socialcompass.GPSTimer.hasSignal;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
+
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.location.Location;
 import android.os.Bundle;
-
 import android.os.Handler;
+import android.os.Looper;
+
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,10 +29,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
-
-import java.util.concurrent.Executors;
 
 public class CompassViewActivity extends AppCompatActivity {
     private OrientationService orientationService;
@@ -34,8 +39,12 @@ public class CompassViewActivity extends AppCompatActivity {
     final String userPrivateKey = "team4PrivateKey";
     final String userPublicKey = "team4PublicKey";
     private FriendViewModel viewModel;
+    private Handler mMinuteHandler;
+    public long mLastGpsTime;
+    public long currentTime;
     String ourDisplayName;
     private ZoomLevel zoomLevel;
+
 
 
     @Override
@@ -86,7 +95,10 @@ public class CompassViewActivity extends AppCompatActivity {
                 o_loc.getController().setLocAngle(angle);
 //                o_loc.getController().updateUI();
             }
+
+            mLastGpsTime = System.currentTimeMillis();
             CompassLocationContainer.singleton().updateAll();
+
         });
 
         orientationService.getOrientation().observe(this, orientation -> {
@@ -100,7 +112,43 @@ public class CompassViewActivity extends AppCompatActivity {
             CompassLocationContainer.singleton().updateAll();
         });
         orientationService.registerSensorListener();
+
+        mMinuteHandler = new Handler(Looper.getMainLooper());
+        mMinuteHandler.postDelayed(mGpsCheckRunnable, 5000); //wait 5 seconds before starting to check
+//        mLastGpsTime = System.currentTimeMillis();
     }
+
+    private final Runnable mGpsCheckRunnable = new Runnable() {
+        @Override
+        public void run() {
+            TextView timer = findViewById(R.id.timer);
+            ImageView status = findViewById(R.id.status);
+
+            currentTime = System.currentTimeMillis();
+            Log.i("GPS", "" + String.valueOf(currentTime-mLastGpsTime));
+
+            String toDisplay = calculateGPSdelay(currentTime, mLastGpsTime);
+
+            if(color(currentTime, mLastGpsTime)){
+                status.getDrawable().clearColorFilter();
+            } else {
+                status.getDrawable().setColorFilter(0xffff0000, PorterDuff.Mode.MULTIPLY );
+            }
+
+            if(hasSignal(currentTime, mLastGpsTime)){
+                timer.setText(toDisplay);
+                currentTime = System.currentTimeMillis();
+                mLastGpsTime = System.currentTimeMillis();
+            } else {
+                timer.setText(toDisplay);
+            }
+
+            // Schedule the next GPS check in one second
+            mMinuteHandler.postDelayed(this, 1000);
+        }
+    };
+
+
 
     public void onBackClicked(View view){
         finish();
@@ -148,6 +196,7 @@ public class CompassViewActivity extends AppCompatActivity {
         //starts intent to preferences view activity
         Intent intent = new Intent(this, PreferencesActivity.class);
         startActivityForResult(intent, PreferencesActivity.REQUEST_CODE);
+
     }
 
 
@@ -160,9 +209,10 @@ public class CompassViewActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         String fetchedDisplayName = data.getStringExtra("newDisplayName");
-        if(!fetchedDisplayName.equals("error")){
+        if (!fetchedDisplayName.equals("error")) {
             setDisplayName(fetchedDisplayName);
         }
+
 
         if (requestCode == PreferencesActivity.REQUEST_CODE && resultCode == RESULT_OK) {
             // Called when finished from PreferenceActivity and a name was added
@@ -175,7 +225,6 @@ public class CompassViewActivity extends AppCompatActivity {
             }
         }
     }
-
 
 
     public void onPlusClicked(View view) {
@@ -225,5 +274,4 @@ public class CompassViewActivity extends AppCompatActivity {
         }
         zoomLevel.decreaseZoomLevel();
     }
-
 }
