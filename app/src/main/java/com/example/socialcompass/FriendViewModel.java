@@ -27,6 +27,7 @@ public class FriendViewModel extends AndroidViewModel {
     public List<userID> getFriendsSync() {
         return id_dao.getAll();
     }
+
     public LiveData<List<userID>> getFriends() {
         if (friendIDs == null) {
             loadFriends();

@@ -53,6 +53,14 @@ public class PreferencesActivity extends AppCompatActivity {
     public void onAddClicked(View view) {
         String uuid = ((TextView) findViewById(R.id.editUUID)).getText().toString();
         newFriend.setText("");
+
+        for(var l : viewModel.getFriendsSync()){
+            if(l.friendID.equals(uuid)){
+                Log.i("two", "alreadyyyyyyyyy exist" + uuid);
+                return;
+            }
+        }
+//        for(var l : viewModel.getFriendsSync()){Log.i("two", l.friendID);}
         viewModel.addFriend(uuid);
 
         /* If names were added, CompassView needs to refresh it's list */

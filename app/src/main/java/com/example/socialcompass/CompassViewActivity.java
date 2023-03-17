@@ -3,15 +3,19 @@ package com.example.socialcompass;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Rect;
 import android.location.Location;
 import android.os.Bundle;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,27 +31,27 @@ public class CompassViewActivity extends AppCompatActivity {
     private LocationService locationService;
     Location currentLocation;
     private CompassLocationContainer locations;
-    private int circleRadiusLayerOne;
     final String userPrivateKey = "team4PrivateKey";
     final String userPublicKey = "team4PublicKey";
     private FriendViewModel viewModel;
-    String ourDisplayName = LocationAPI.provide().getFromRemoteAPIAsync(userPublicKey).label;
+    String ourDisplayName;
+    private ZoomLevel zoomLevel;
 
-
-//    @Override
-//    protected void onPause(){
-//        super.onPause();
-//        orientationService.unregisterSensorListeners();
-//        locationService.unregisterLocationListener();
-//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compass_view);
-
         viewModel = new ViewModelProvider(this).get(FriendViewModel.class);
 
+        zoomLevel = ZoomLevel.singleton(this);
+
+        var R = LocationAPI.provide().getFromRemoteAPIAsync(userPublicKey);
+        if (R != null) {
+            ourDisplayName = R.label;
+        } else {
+            ourDisplayName = "User";
+        }
         currentLocation = new Location("User Location");
         currentLocation.setLatitude(90.0000);
         currentLocation.setLongitude(90.0000);
@@ -60,7 +64,6 @@ public class CompassViewActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, 200);
         }
 
-        circleRadiusLayerOne = (int) (180 * getResources().getDisplayMetrics().scaledDensity);
 
         for (userID uuid : viewModel.getFriendsSync()) {
             Log.i("[HERE]", uuid.friendID);
@@ -71,23 +74,19 @@ public class CompassViewActivity extends AppCompatActivity {
         orientationService = OrientationService.singleton(this);
 
         locationService.getLocation().observe(this, loc -> {
+
             currentLocation.setLatitude(loc.first);
             currentLocation.setLongitude(loc.second);
-
             LocationAPI.provide().upsertToRemoteAPIAsync(userPrivateKey, userPublicKey, currentLocation, this.ourDisplayName);
 
             for (CompassLocationObject o_loc : locations){
                 float angle = currentLocation.bearingTo(o_loc.getLocation());
-
                 var trueDistance = currentLocation.distanceTo(o_loc.getLocation());
-                var relativeDistance = (int) ((trueDistance/6378153) * (circleRadiusLayerOne/3));
-//                System.out.println(circleRadiusLayerOne);
-//                System.out.println(relativeDistance);
-
-                o_loc.getController().setDistance(relativeDistance);
+                o_loc.getController().setDistance(trueDistance);
                 o_loc.getController().setLocAngle(angle);
-                o_loc.getController().updateUI();
+//                o_loc.getController().updateUI();
             }
+            CompassLocationContainer.singleton().updateAll();
         });
 
         orientationService.getOrientation().observe(this, orientation -> {
@@ -96,8 +95,9 @@ public class CompassViewActivity extends AppCompatActivity {
 
             for (CompassLocationObject o_loc : locations) {
                 o_loc.getController().setOrient(angle);
-                o_loc.getController().updateUI();
+//                o_loc.getController().updateUI();
             }
+            CompassLocationContainer.singleton().updateAll();
         });
         orientationService.registerSensorListener();
     }
@@ -107,10 +107,10 @@ public class CompassViewActivity extends AppCompatActivity {
     }
 
     private void AddLocationToActivity(String publickey) {
-        CompassUIController ui_controller = new CompassUIController(0,0, circleRadiusLayerOne, null);
         TextView cur_text_view = Utilities.createCompassLocationTextView(this, publickey, 0, 0, 20f, false);
         ((ConstraintLayout) findViewById(R.id.clock)).addView(cur_text_view);
-        ui_controller.setTextView(cur_text_view);
+        CompassUIController ui_controller = new CompassUIController(0,0, 1e12f, cur_text_view);
+
         locations.createAndAddLocation(publickey, ui_controller);
     }
 
@@ -164,17 +164,8 @@ public class CompassViewActivity extends AppCompatActivity {
             setDisplayName(fetchedDisplayName);
         }
 
-
-
         if (requestCode == PreferencesActivity.REQUEST_CODE && resultCode == RESULT_OK) {
             // Called when finished from PreferenceActivity and a name was added
-
-//            String fetchedDisplayName = data.getStringExtra("newDisplayName");
-//            setDisplayName(fetchedDisplayName);
-//            if(!fetchedDisplayName.equals("error")){
-//                setDisplayName("joe");
-//            }
-//            Log.i("Debuug", "YOOOOOOOOO" + fetchedDisplayName);
 
             locations.clear();
 
@@ -184,4 +175,55 @@ public class CompassViewActivity extends AppCompatActivity {
             }
         }
     }
+
+
+
+    public void onPlusClicked(View view) {
+        if (zoomLevel.getZoomLevelNumber() == 3)
+        {
+            return;
+        }
+        if(zoomLevel.getZoomLevelNumber() == 0) {
+            ImageView minus = findViewById(R.id.minus_btn);
+            minus.setColorFilter(null);
+            minus.setImageAlpha(255);
+        }
+        if (zoomLevel.getZoomLevelNumber() == 2)
+        {
+            // https://stackoverflow.com/questions/28308325/androidset-gray-scale-filter-to-imageview
+            ColorMatrix matrix = new ColorMatrix();
+            matrix.setSaturation(0);  //0 means grayscale
+            matrix.reset();
+            ColorMatrixColorFilter cf = new ColorMatrixColorFilter(matrix);
+            ImageView plus = findViewById(R.id.plus_btn);
+            plus.setColorFilter(cf);
+            plus.setImageAlpha(128);
+
+        }
+        zoomLevel.incrementZoomLevel();
+    }
+
+    public void onMinusClicked(View view) {
+        if (zoomLevel.getZoomLevelNumber() == 0)
+        {
+            return;
+        }
+        if(zoomLevel.getZoomLevelNumber() == 3) {
+            ImageView plus = findViewById(R.id.plus_btn);
+            plus.setColorFilter(null);
+            plus.setImageAlpha(255);
+        }
+        if (zoomLevel.getZoomLevelNumber() == 1)
+        {
+            // https://stackoverflow.com/questions/28308325/androidset-gray-scale-filter-to-imageview
+            ColorMatrix matrix = new ColorMatrix();
+            matrix.setSaturation(0);  //0 means grayscale
+            ColorMatrixColorFilter cf = new ColorMatrixColorFilter(matrix);
+            ImageView minus = findViewById(R.id.minus_btn);
+            minus.setColorFilter(cf);
+            minus.setImageAlpha(128);
+        }
+        zoomLevel.decreaseZoomLevel();
+    }
+
 }
