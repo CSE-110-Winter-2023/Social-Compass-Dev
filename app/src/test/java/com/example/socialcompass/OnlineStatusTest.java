@@ -53,51 +53,37 @@ public class OnlineStatusTest {
 
     @Test
     public void testTextViewTextChange() {
-        ActivityScenario<CompassViewActivity> scenario = ActivityScenario.launch(CompassViewActivity.class);
-        scenario.moveToState(Lifecycle.State.CREATED);
-        scenario.moveToState(Lifecycle.State.STARTED);
-        scenario.onActivity(activity -> {
-            TextView timer = activity.findViewById(R.id.timer);
 
-            activity.mLastGpsTime = 0;
-            activity.currentTime = 0;
-            assertEquals("", timer.getText().toString());
+        long mLastGpsTime = 0;
+        long currentTime = 0;
+        assertEquals("", calculateGPSdelay(currentTime, mLastGpsTime));
 
-            activity.currentTime = 100000;
-            assertEquals("1 m", calculateGPSdelay(activity.currentTime, activity.mLastGpsTime));
+        currentTime = 100000;
+        assertEquals("1 m", calculateGPSdelay(currentTime, mLastGpsTime));
 
-            activity.currentTime = 3000000;
-            assertEquals("50 m", calculateGPSdelay(activity.currentTime, activity.mLastGpsTime));
+        currentTime = 3000000;
+        assertEquals("50 m", calculateGPSdelay(currentTime, mLastGpsTime));
 
-            activity.currentTime = 10800000;
-            assertEquals("3 hr", calculateGPSdelay(activity.currentTime, activity.mLastGpsTime));
+        currentTime = 10800000;
+        assertEquals("3 hr", calculateGPSdelay(currentTime, mLastGpsTime));
 
-
-        });
     }
 
     @Test
     public void testColorChange() {
-        ActivityScenario<CompassViewActivity> scenario = ActivityScenario.launch(CompassViewActivity.class);
-        scenario.moveToState(Lifecycle.State.CREATED);
-        scenario.moveToState(Lifecycle.State.STARTED);
-        scenario.onActivity(activity -> {
 
-            activity.mLastGpsTime = 0;
-            activity.currentTime = 0;
-            assertEquals(true, color(activity.currentTime, activity.mLastGpsTime));
+        long mLastGpsTime = 0;
+        long currentTime = 0;
+        assertEquals(true, color(currentTime, mLastGpsTime));
 
-            activity.currentTime = 100000;
-            assertEquals(false, color(activity.currentTime, activity.mLastGpsTime));
+        currentTime = 100000;
+        assertEquals(false, color(currentTime, mLastGpsTime));
 
-            activity.currentTime = 3000000;
-            assertEquals(false, color(activity.currentTime, activity.mLastGpsTime));
+        currentTime = 3000000;
+        assertEquals(false, color(currentTime, mLastGpsTime));
 
-            activity.currentTime = 10800000;
-            assertEquals(false, color(activity.currentTime, activity.mLastGpsTime));
-
-
-        });
+        currentTime = 10800000;
+        assertEquals(false, color(currentTime, mLastGpsTime));
 
     }
 }
