@@ -30,12 +30,23 @@ public class LocationAPI {
         this.client = new OkHttpClient();
     }
 
+    static boolean useMockAPI = false;
+
+    public static void useMockAPI(boolean mockOrNot){
+        useMockAPI = mockOrNot;
+    }
+
     public static LocationAPI provide() {
         if (instance == null) {
-            instance = new LocationAPI();
+            if(useMockAPI){
+                instance = new MockLocationAPI();
+            } else {
+                instance = new LocationAPI();
+            }
         }
         return instance;
     }
+
     @AnyThread
     public RemoteLocation getFromRemoteAPIAsync(String publicCode) {
         var executor = Executors.newSingleThreadExecutor();

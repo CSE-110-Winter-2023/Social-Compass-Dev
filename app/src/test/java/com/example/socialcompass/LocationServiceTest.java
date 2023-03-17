@@ -34,6 +34,7 @@ public class LocationServiceTest {
     @Test
     public void testGetLocation() {
         ActivityScenario<CompassViewActivity> scenario = ActivityScenario.launch(CompassViewActivity.class);
+        LocationAPI.useMockAPI(true);
         scenario.moveToState(Lifecycle.State.CREATED);
         scenario.moveToState(Lifecycle.State.STARTED);
 
