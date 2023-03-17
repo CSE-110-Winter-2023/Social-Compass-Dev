@@ -8,14 +8,21 @@
 
 package com.example.socialcompass;
 
+import android.app.Activity;
+import android.graphics.Color;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 public class CompassUIController implements UIController {
     private float locAngle;
     private float orientAngle;
-    private int distance;
+    private float distance;
+    private float UIdistance;
     private TextView tv;
+    private View imageViewDot;
 
     /**
      * Constructor for the CompassUIController class. It initializes the instance variables for the
@@ -27,11 +34,14 @@ public class CompassUIController implements UIController {
      * @param distance The distance to the target location
      * @param tv The TextView used to display the compass needle
      */
-    public CompassUIController(float locAngle, float orientAngle, int distance, TextView tv){
+    public CompassUIController(float locAngle, float orientAngle, float distance, TextView tv){
         this.locAngle = locAngle;
         this.orientAngle = orientAngle;
         this.distance = distance;
         this.tv = tv;
+        if(tv != null){
+            this.imageViewDot = Utilities.createCompassLocationImage((this.tv.getContext()), 0, 0);
+        }
     }
 
     /**
@@ -71,15 +81,9 @@ public class CompassUIController implements UIController {
         return this.orientAngle;
     }
 
-    /**
-     * Sets the TextView used to display the compass needle to the given TextView.
-     *
-     * @param tv The new TextView used to display the compass needle
-     */
-    public void setTextView(TextView tv) {
-        this.tv = tv;
+    public View getDotTextView() {
+        return imageViewDot;
     }
-
     /**
      * Returns the current TextView used to display the compass needle.
      *
@@ -89,11 +93,11 @@ public class CompassUIController implements UIController {
         return tv;
     }
 
-    public void setDistance(int distance) {
+    public void setDistance(float distance) {
         this.distance = distance;
     }
 
-    public int getDistance() {
+    public float getDistance() {
         return this.distance;
     }
     /**
@@ -102,12 +106,32 @@ public class CompassUIController implements UIController {
      * used to display the compass needle accordingly.
      */
     @Override
-    public void updateUI(){
+    public void updateUI(int offset){
         float angle = locAngle + orientAngle;
+
         ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) tv.getLayoutParams();
+        ConstraintLayout.LayoutParams layoutParamsDot = (ConstraintLayout.LayoutParams) imageViewDot.getLayoutParams();
+
+        layoutParamsDot.circleAngle = angle;
+        layoutParamsDot.circleRadius = (int) (175 * (this.tv.getContext()).getResources().getDisplayMetrics().scaledDensity);
+
+        this.UIdistance = ZoomLevel.singleton(null).calculateDistance(this.distance);
+
         layoutParams1.circleAngle = angle;
-        layoutParams1.circleRadius = distance;
+        layoutParams1.circleRadius = (int) UIdistance + offset;
+
+
+        if (ZoomLevel.singleton(null).distanceInView(this.distance)) {
+            tv.setVisibility(View.VISIBLE);
+            imageViewDot.setVisibility(View.INVISIBLE);
+        } else {
+            tv.setVisibility(View.INVISIBLE);
+            imageViewDot.setVisibility(View.VISIBLE);
+        }
+
+        imageViewDot.setLayoutParams(layoutParamsDot);
         tv.setLayoutParams(layoutParams1);
-        tv.setRotation(0);
+        tv.setTextColor(Color.BLACK);
+        tv.setRotation(angle);
     }
 }
