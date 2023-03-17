@@ -143,7 +143,7 @@ public class CompassLocationContainer implements Iterable<CompassLocationObject>
 
 //            loc.getController().getTextView().setVisibility(View.INVISIBLE);
 //            loc.getController().getDotTextView().setVisibility(View.INVISIBLE);
-            loc.destroy();;
+            loc.destroy();
         }
 
         locationList = new ArrayList<>();

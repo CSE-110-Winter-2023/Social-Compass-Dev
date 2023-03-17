@@ -37,6 +37,7 @@ public class CompassLocationObject {
 
     public void updateFromRemote(RemoteLocation remoteLoc) {
         Log.i("UPDATE",remoteLoc.toJSON());
+        assert remoteLoc != null;
         this.location.setLatitude(remoteLoc.latitude);
         this.location.setLongitude(remoteLoc.longitude);
         this.locationName = remoteLoc.label;

@@ -54,8 +54,13 @@ public class CompassViewActivity extends AppCompatActivity {
 
         zoomLevel = ZoomLevel.singleton(this);
 
-        ourDisplayName = LocationAPI.provide().getFromRemoteAPIAsync(userPublicKey).label;
-
+        var R = LocationAPI.provide().getFromRemoteAPIAsync(userPublicKey);
+        assert R != null;
+        if (R != null) {
+            ourDisplayName = R.label;
+        } else {
+            ourDisplayName = "User";
+        }
         currentLocation = new Location("User Location");
         currentLocation.setLatitude(90.0000);
         currentLocation.setLongitude(90.0000);

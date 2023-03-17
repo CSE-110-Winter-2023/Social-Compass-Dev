@@ -8,6 +8,7 @@
 
 package com.example.socialcompass;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
@@ -122,10 +123,9 @@ public class CompassUIController implements UIController {
 
         ConstraintLayout.LayoutParams layoutParams1 = (ConstraintLayout.LayoutParams) tv.getLayoutParams();
         ConstraintLayout.LayoutParams layoutParamsDot = (ConstraintLayout.LayoutParams) imageViewDot.getLayoutParams();
-        Log.i("collision", "REG");
 
         layoutParamsDot.circleAngle = angle;
-        layoutParamsDot.circleRadius = 605;
+        layoutParamsDot.circleRadius = (int) (175 * ((Activity) this.tv.getContext()).getResources().getDisplayMetrics().scaledDensity);
 
         this.UIdistance = ZoomLevel.singleton(null).calculateDistance(this.distance);
 
@@ -134,11 +134,9 @@ public class CompassUIController implements UIController {
 
 
         if (ZoomLevel.singleton(null).distanceInView(this.distance)) {
-            System.out.println("VISIBLE");
             tv.setVisibility(View.VISIBLE);
             imageViewDot.setVisibility(View.INVISIBLE);
         } else {
-            System.out.println("INVISIBLE");
             tv.setVisibility(View.INVISIBLE);
             imageViewDot.setVisibility(View.VISIBLE);
         }
@@ -146,6 +144,6 @@ public class CompassUIController implements UIController {
         imageViewDot.setLayoutParams(layoutParamsDot);
         tv.setLayoutParams(layoutParams1);
         tv.setTextColor(Color.BLACK);
-        tv.setRotation(angle);
+        tv.setRotation(0);
     }
 }
