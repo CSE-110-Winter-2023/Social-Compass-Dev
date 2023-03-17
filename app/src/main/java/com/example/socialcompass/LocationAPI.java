@@ -22,6 +22,7 @@ import okhttp3.RequestBody;
 
 public class LocationAPI {
 
+    public static final String API_BASE_URL = "https://socialcompass.goto.ucsd.edu/";
     private volatile static LocationAPI instance = null;
 
     private OkHttpClient client;
@@ -52,7 +53,7 @@ public class LocationAPI {
     public RemoteLocation getFromRemoteAPI(String publicCode){
 
         var request = new Request.Builder()
-                .url("https://socialcompass.goto.ucsd.edu/location/" + publicCode)
+                .url(API_BASE_URL + "location/" + publicCode)
                 .method("GET", null)
                 .build();
 
@@ -98,7 +99,7 @@ public class LocationAPI {
         }
         RequestBody body = RequestBody.create(String.valueOf(noteJSON), JSON);
         var request = new Request.Builder()
-                .url("https://socialcompass.goto.ucsd.edu/location/" + userPublicKey)
+                .url(API_BASE_URL + "location/" + userPublicKey)
                 .method("PUT", body)
                 .build();
 
