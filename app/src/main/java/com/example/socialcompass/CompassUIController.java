@@ -39,8 +39,9 @@ public class CompassUIController implements UIController {
         this.orientAngle = orientAngle;
         this.distance = distance;
         this.tv = tv;
-
-        this.imageViewDot = Utilities.createCompassLocationImage((this.tv.getContext()), 0, 0);
+        if(tv != null){
+            this.imageViewDot = Utilities.createCompassLocationImage((this.tv.getContext()), 0, 0);
+        }
     }
 
     /**
