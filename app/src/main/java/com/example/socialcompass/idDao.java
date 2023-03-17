@@ -12,6 +12,9 @@ public interface idDao {
     @Insert
     long insert(userID id);
 
+    @Insert
+    List<Long> insertAll(List<userID> id);
+
     @Query("SELECT * FROM `user_ids` WHERE `id`=:id")
     userID get(long id);
 

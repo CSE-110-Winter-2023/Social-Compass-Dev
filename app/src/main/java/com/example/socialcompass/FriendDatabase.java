@@ -3,6 +3,7 @@ package com.example.socialcompass;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
@@ -30,5 +31,13 @@ public abstract class FriendDatabase extends RoomDatabase {
                     }
                 })
                 .build();
+    }
+
+    @VisibleForTesting
+    public static void injectTestDatabase(FriendDatabase friendDb) {
+        if (singleton != null) {
+            singleton.close();
+        }
+        singleton = friendDb;
     }
 }

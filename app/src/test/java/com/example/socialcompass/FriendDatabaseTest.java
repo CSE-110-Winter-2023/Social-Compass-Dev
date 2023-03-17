@@ -70,14 +70,14 @@ public class FriendDatabaseTest {
         dao.insert(item1);
         dao.insert(item2);
 
-        List<userID> retrievedItems = dao.getAll();
+        List<userID> dbItems = dao.getAll();
 
-        assertEquals(2, retrievedItems.size());
+        assertEquals(2, dbItems.size());
 
-        assertEquals(item1.friendID, retrievedItems.get(0).friendID);
-        assertEquals(item1.myID, retrievedItems.get(0).myID);
-        assertEquals(item2.friendID, retrievedItems.get(1).friendID);
-        assertEquals(item2.myID, retrievedItems.get(1).myID);
+        assertEquals(item1.friendID, dbItems.get(0).friendID);
+        assertEquals(item1.myID, dbItems.get(0).myID);
+        assertEquals(item2.friendID, dbItems.get(1).friendID);
+        assertEquals(item2.myID, dbItems.get(1).myID);
     }
 
     @Test
@@ -90,14 +90,14 @@ public class FriendDatabaseTest {
 
         LiveData<List<userID>> liveDataItems = dao.getAllLive();
 
-        Observer<List<userID>> observer = new Observer<List<userID>>() {
+        Observer<List<userID>> observer = new Observer<>() {
             @Override
-            public void onChanged(List<userID> retrievedItems) {
+            public void onChanged(List<userID> dbItems) {
 
-                assertEquals(item1.friendID, retrievedItems.get(0).friendID);
-                assertEquals(item1.myID, retrievedItems.get(0).myID);
-                assertEquals(item2.friendID, retrievedItems.get(1).friendID);
-                assertEquals(item2.myID, retrievedItems.get(1).myID);
+                assertEquals(item1.friendID, dbItems.get(0).friendID);
+                assertEquals(item1.myID, dbItems.get(0).myID);
+                assertEquals(item2.friendID, dbItems.get(1).friendID);
+                assertEquals(item2.myID, dbItems.get(1).myID);
 
                 liveDataItems.removeObserver(this);
             }
