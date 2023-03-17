@@ -1,6 +1,7 @@
 package com.example.socialcompass;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import android.Manifest;
 import android.util.Log;
