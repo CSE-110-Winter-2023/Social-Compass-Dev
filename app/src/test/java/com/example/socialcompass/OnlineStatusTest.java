@@ -51,6 +51,7 @@ public class OnlineStatusTest {
 
     }
 
+
     @Test
     public void testTextViewTextChange() {
 
@@ -86,4 +87,5 @@ public class OnlineStatusTest {
         assertEquals(false, color(currentTime, mLastGpsTime));
 
     }
+
 }
