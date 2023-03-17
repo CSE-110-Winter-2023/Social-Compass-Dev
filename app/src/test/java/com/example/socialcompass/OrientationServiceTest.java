@@ -32,6 +32,7 @@ public class OrientationServiceTest {
     @Test
     public void testGetOrientation() {
         ActivityScenario<CompassViewActivity> scenario = ActivityScenario.launch(CompassViewActivity.class);
+
         scenario.moveToState(Lifecycle.State.CREATED);
         scenario.moveToState(Lifecycle.State.STARTED);
         scenario.onActivity(activity -> {
